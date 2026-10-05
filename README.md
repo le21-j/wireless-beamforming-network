@@ -4,6 +4,7 @@ Two FPGA radio nodes connect two companion PCs over a wireless link. Each node c
 
 This repository currently contains a **proposed implementation plan**, not working FPGA or firmware code. Board models, team assignments, tool versions, and performance targets still need confirmation.
 
+- [Start here: reading guide, learning paths and preparation exercises](docs/reading-guide.md)
 - [Project graph, milestones, modules, and interface contracts](docs/project-plan.md)
 - [34 live GitHub issues](https://github.com/le21-j/wireless-beamforming-network/issues)
 - [Ticket index with direct issue and dependency links](docs/github-issues.md)

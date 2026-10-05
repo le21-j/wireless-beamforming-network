@@ -4,6 +4,8 @@ The 34 implementation tickets are published in the private repository [le21-j/wi
 
 [All issues](https://github.com/le21-j/wireless-beamforming-network/issues) · [Milestones](https://github.com/le21-j/wireless-beamforming-network/milestones) · [Architecture](project-plan.md) · [Ticket specifications](backlog.md)
 
+Before starting a ticket, use the [starter reading guide](reading-guide.md#choose-a-reading-path) to find the resources and preparation exercise for its work area.
+
 | ID | GitHub issue | Milestone | Prerequisites |
 |---|---|---|---|
 | S01 | [#1 — Decide hardware, scope and demo targets](https://github.com/le21-j/wireless-beamforming-network/issues/1) | M0 | None |
