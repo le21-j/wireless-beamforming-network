@@ -47,6 +47,7 @@ The published milestones are M0 Foundations, M1 Local network, M2 Modem bench, M
 
 Configured labels:
 
+- Work area: `area:hardware-rf`, `area:fpga-verilog`, `area:embedded-software`, `area:host-software`, `area:integration-testing`. Each issue has at least one, and shared work can have several.
 - Module: `module:hardware`, `module:platform`, `module:network`, `module:modem`, `module:link`, `module:discovery`, `module:integration`.
 - Readiness: `status:ready` for work whose prerequisites are complete; `status:blocked` for unmet prerequisites. S01 is the initial Ready issue; update these labels as work advances.
 - Priority: `priority:P0` for the first three demonstrations and foundations, `priority:P1` for direction-aware integration, `priority:P2` for optional extensions.
@@ -54,6 +55,22 @@ Configured labels:
 These priorities indicate execution order; M4 is still part of the requested direction-aware project. Give every issue one primary owner, a reviewer, a milestone, explicit prerequisite links, and observable acceptance criteria. Assign firmware/RTL boundary tickets such as F02 and F03 one accountable owner and a reviewer from the other side.
 
 If a project board is added, use statuses **Backlog → Ready → In progress → Review → Done**, with **Blocked** for an explicit unmet prerequisite. Put an issue in Ready only when it can be implemented against stable contracts or clearly scoped mocks. Limit each teammate to one main implementation issue at a time; record useful independent work when blocked.
+
+## Work area labels
+
+Area labels identify the technical work involved. Module labels identify the subsystem that owns the ticket. Keep both: a modem task can involve host modeling, FPGA logic or RF measurements even though all three belong to `module:modem`.
+
+| Area label and issue filter | Color | Use for |
+|---|---|---|
+| [area:hardware-rf](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Ahardware-rf%22) | Orange | Boards, physical RF paths, converters, clocks, antennas, calibration and RF bench work |
+| [area:fpga-verilog](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Afpga-verilog%22) | Purple | RTL/Verilog, FPGA interfaces, fixed-point hardware design and FPGA verification |
+| [area:embedded-software](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Aembedded-software%22) | Blue | Processor firmware, BSPs, drivers, lwIP, routing and on-device control logic |
+| [area:host-software](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Ahost-software%22) | Green | PC tools, simulation/reference models, scripts, automation and host provisioning |
+| [area:integration-testing](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Aintegration-testing%22) | Gray | Shared planning/contracts, cross-module bring-up, integration and system validation |
+
+Apply more than one area when the ticket includes meaningful work or validation in each. For example, F02 includes an AXI register block and its processor driver, so it has both FPGA/Verilog and embedded-software labels. D01 builds a PC reference model, so it has host-software. Dependencies alone do not require every upstream area label, and ordinary unit tests do not automatically make a ticket an integration task.
+
+All 34 initial issues are classified. For future issues, apply the matching area labels in GitHub alongside module, priority and readiness. Revisit labels when a ticket is split or its implementation scope changes; F04 and X02 currently span alternatives whose final partition remains a design decision.
 
 ## Initial parallel assignments
 
@@ -75,4 +92,4 @@ Each pull request should link its issue, describe the concrete behavior, identif
 
 ## Publication status
 
-The repository contains the reviewed planning documents and issue/PR templates. All 34 tickets are live, with linked prerequisites, acceptance checkboxes, module/priority/readiness labels and one of the six milestones. Individual assignees and due dates remain unset. No teammate invitations have been sent, and a GitHub project board has not been created. The older direction-finding HTML proposal is retained only in the local workspace and excluded from this repository.
+The repository contains the reviewed planning documents and issue/PR templates. All 34 tickets are live, with linked prerequisites, acceptance checkboxes, work-area/module/priority/readiness labels and one of the six milestones. Individual assignees and due dates remain unset. No teammate invitations have been sent, and a GitHub project board has not been created. The older direction-finding HTML proposal is retained only in the local workspace and excluded from this repository.

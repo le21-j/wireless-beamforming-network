@@ -6,6 +6,7 @@ body:
     id: module
     attributes:
       label: Module and milestone
+      description: Also apply the matching area labels in GitHub; see the work-area label guide in docs/github-setup.md. Shared tasks can have multiple areas.
       placeholder: "Networking / M1 Local network"
     validations:
       required: true
