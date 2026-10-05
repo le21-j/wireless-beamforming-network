@@ -2,7 +2,7 @@
 
 Build a two-node IPv4 router in stages so that Ethernet, firmware, modem, and RF failures can be isolated. The first three demonstrations are a PC pinging its local FPGA, two FPGA nodes exchanging valid radio packets, and two PCs exchanging ordinary IP traffic through those nodes. Automatic beam discovery follows the fixed-link demonstration.
 
-This is a proposed work breakdown. Exact board models, RF front ends, available equipment, team size, and deadline are unconfirmed. Numeric gates below are initial acceptance targets for the team to ratify in S01; they are not measured results or promised hardware performance. Ticket IDs refer to [the backlog](backlog.md) and map to published GitHub issues through the [live issue index](github-issues.md); they are distinct from GitHub issue numbers.
+Ticket IDs refer to [the backlog](backlog.md) and map to published GitHub issues through the [live issue index](github-issues.md); they are distinct from GitHub issue numbers.
 
 ## Dependency graph
 
