@@ -11,7 +11,7 @@ capstone/
     ISSUE_TEMPLATE/task.yml
     pull_request_template.md
   docs/
-    reading-guide.md       # Shared foundation, module readings and exercises
+    reading-guide.md       # Useful links grouped by project area
     project-plan.md
     backlog.md
     github-issues.md
