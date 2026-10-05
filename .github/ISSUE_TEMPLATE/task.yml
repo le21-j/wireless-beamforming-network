@@ -1,0 +1,55 @@
+name: Capstone implementation task
+description: A bounded task with dependencies and measurable acceptance criteria
+title: "[ID] Concrete task title"
+body:
+  - type: input
+    id: module
+    attributes:
+      label: Module and milestone
+      placeholder: "Networking / M1 Local network"
+    validations:
+      required: true
+  - type: input
+    id: ownership
+    attributes:
+      label: Primary owner and reviewer
+      placeholder: "Owner: teammate; reviewer: teammate"
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Observable outcome
+      description: Describe the behavior this task will make possible.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and interfaces
+      description: Link prerequisite issues and the contracts or mocks this task uses.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Implementation scope
+      description: List concrete changes and any explicit limits needed to keep the task bounded.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance checks
+      description: Use checkboxes with pass/fail outcomes and agreed test conditions.
+      value: |
+        - [ ] Required behavior is demonstrated.
+        - [ ] Relevant failure behavior is demonstrated.
+        - [ ] Reproduction steps and evidence are attached.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and reproduction
+      description: Record build IDs, board/configuration, commands, logs, captures or plots. Label simulation separately from hardware results.

@@ -1,0 +1,11 @@
+# Local publication tooling and operation records
+/.local/
+
+# Historical workspace proposal for a different project
+/capstone-pitch.html
+
+# Generated build and Python outputs
+/build/
+.Xil/
+__pycache__/
+.venv/
