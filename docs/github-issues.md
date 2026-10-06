@@ -2,7 +2,7 @@
 
 The 34 implementation tickets are published in the private repository [le21-j/wireless-beamforming-network](https://github.com/le21-j/wireless-beamforming-network). Stable IDs match the dependency graph and backlog; GitHub issue numbers are separate.
 
-[All issues](https://github.com/le21-j/wireless-beamforming-network/issues) · [Milestones](https://github.com/le21-j/wireless-beamforming-network/milestones) · [Architecture](project-plan.md) · [Ticket specifications](backlog.md)
+[All issues](https://github.com/le21-j/wireless-beamforming-network/issues) · [Milestones](https://github.com/le21-j/wireless-beamforming-network/milestones) · [Project plan](project-plan.md) · [Ticket specifications](backlog.md)
 
 The [reading links](reading-guide.md) are there if you want some background on the part you're working on.
 

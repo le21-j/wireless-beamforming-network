@@ -12,7 +12,7 @@ capstone/
     pull_request_template.md
   docs/
     reading-guide.md       # Useful links grouped by project area
-    project-plan.md
+    project-plan.md        # Overview, milestones and expandable engineering notes
     backlog.md
     github-issues.md
     github-setup.md

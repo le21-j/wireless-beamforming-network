@@ -1,12 +1,65 @@
-# Direction aware router implementation plan
+# Our project plan
 
-Build a two-node IPv4 router in stages so that Ethernet, firmware, modem, and RF failures can be isolated. The first three demonstrations are a PC pinging its local FPGA, two FPGA nodes exchanging valid radio packets, and two PCs exchanging ordinary IP traffic through those nodes. Automatic beam discovery follows the fixed-link demonstration.
+We're building a wireless link that lets two PCs talk through two FPGA radio nodes. Here's how we're breaking up the work and what we're trying to get working first. The full task map and engineering notes are at the bottom whenever we need more detail.
 
-Ticket IDs refer to [the backlog](backlog.md) and map to published GitHub issues through the [live issue index](github-issues.md); they are distinct from GitHub issue numbers.
+## The big picture
+
+```mermaid
+flowchart LR
+  PCA["PC A"] <-->|Ethernet| RA["FPGA radio A"]
+  RA <-->|Wireless| RB["FPGA radio B"]
+  RB <-->|Ethernet| PCB["PC B"]
+```
+
+Each radio has three main pieces: **lwIP on the embedded processor** handles network packets, **FPGA logic written in Verilog** handles modem processing and beam control, and **the RF hardware and phased array** transmit and receive the signal.
+
+We'll first get this working with a fixed wireless connection. Then we'll add the ability to find a beam direction automatically and reconnect when the link is interrupted.
+
+## How we'll build it
+
+We'll start by agreeing on the hardware, tools and basic interfaces between our parts of the project (M0). From there, these are the four main demonstrations:
+
+| Stage | What we're working toward |
+|---|---|
+| **M1 · Local connection** | Each PC can ping its own radio node over Ethernet using lwIP. |
+| **M2 · Working modem** | The two radios can send and receive valid packets on the bench. We'll build up through simulations, FPGA loopback and controlled RF tests. |
+| **M3 · PC-to-PC communication** | With a fixed wireless link working, both nodes forward IP packets so the PCs can ping each other and transfer data. |
+| **M4 · Automatic beam discovery** | The nodes try beam settings, exchange HAIL/ACK probes, choose a usable connection and recover after an interruption. |
+
+This is the order we'll demonstrate things, while software, FPGA and hardware work can happen alongside each other. Local ping gives us a starting point; M3 is where we prove forwarding between the PCs.
+
+If we have time, M5 covers transparent Ethernet bridging, easier PC setup and modem improvements. Our starting design uses IP routing with configured addresses and routes.
+
+## How we can split the work
+
+These areas overlap, so we can share them based on what everyone wants to work on.
+
+| Area | What's involved |
+|---|---|
+| **Hardware and RF** | Board connections, converters, clocks, antennas, radio testing and array calibration. |
+| **Embedded software** | Booting the processor, drivers, control registers and moving packets between the processor and FPGA. |
+| **Networking** | Ethernet, lwIP, the radio interface and forwarding packets between the two PCs. |
+| **Modem / FPGA and Verilog** | Simulating the modem, building the transmit and receive logic, and checking it with testbenches. |
+| **Link and beam control** | Taking turns transmitting, handling retries, and applying beam weights in the FPGA. |
+| **Discovery** | Trying beam directions, tracking which connection works and reconnecting when it drops. |
+| **Integration and tools** | Build scripts, PC test programs, packet captures and recording our results. |
+
+## Where we can start
+
+Our first shared task is [S01: hardware, scope and demo targets](https://github.com/le21-j/wireless-beamforming-network/issues/1). Once we've settled those basics, we can work on Ethernet/lwIP bring-up, the modem model and the hardware setup in parallel.
+
+The [issue list](github-issues.md) has the individual tasks and their dependencies. The area labels help us find hardware, embedded software, FPGA/Verilog and host software work. The [reading guide](reading-guide.md) has a few starting links for each area.
+
+As we test, we'll track packet delivery, useful throughput, beam settings, discovery time and recovery time. The proposed test targets are in the notes below; we'll refine them around the hardware we choose.
+
+## More detail when we need it
+
+<details>
+<summary>Full task map and dependencies</summary>
 
 ## Dependency graph
 
-Arrows mean that the predecessor supplies a needed result. Work in separate branches can proceed in parallel. Milestone diamonds are demonstrations, not additional implementation tickets. The gate arrows emphasize integration order; the backlog lists every ticket prerequisite.
+The arrows show which tasks build on earlier work. Separate branches can move in parallel, and the diamonds mark demonstrations. IDs like N02 match the [backlog](backlog.md) and [issue index](github-issues.md); GitHub issue numbers are separate. The backlog has the full prerequisite list.
 
 ```mermaid
 flowchart TB
@@ -127,6 +180,13 @@ flowchart TB
   D06 --> X03
 ```
 
+</details>
+
+<details>
+<summary>Engineering notes: networking, interfaces, hardware and test targets</summary>
+
+These are the details we'll come back to as we build each part. The milestone measurements below are proposed starting targets.
+
 ## Architecture to build first
 
 Use routed IPv4 with static addresses and routes for the first PC-to-PC demonstration. A node has an Ethernet interface for its companion PC and one point-to-point radio IP interface for its peer. Application endpoints remain on the PCs.
@@ -171,7 +231,7 @@ Route expiry must prevent unintended forwarding. Returning `NULL` from the lwIP 
 
 ## Modules and ownership boundaries
 
-These are seven workstreams, not a requirement for seven people. Assign one primary owner and one reviewer to each after confirming team size. Shared-boundary changes require review from both affected modules.
+We can split these areas across the team, with a primary owner and someone to review each part. When a change affects two modules, the people working on both can check it together.
 
 | Module | Work and suggested location | Inputs and deliverable | Initial ticket families |
 |---|---|---|---|
@@ -228,9 +288,9 @@ Use one supported lwIP execution model. In bare-metal mainloop mode, service inp
 
 ## First work to start
 
-Complete S01 as a short team decision session, then run S02, S03 and H01 in parallel. Once their contracts are stable, the network/platform owner starts F01→N01→N02; the modem owner starts D01→D02; the hardware owner starts H03 and prepares H02; the integration owner starts S04. F02/F03 and the radio mock N03 provide independent integration targets while modem RTL is in progress.
+After S01, S02, S03 and H01 can move in parallel. Once we've agreed on the interfaces, networking/platform work follows F01→N01→N02, modem work starts with D01→D02, hardware work starts with H03 and preparation for H02, and test tooling starts with S04. F02/F03 and the radio mock N03 let us try the interfaces while the modem RTL is still being developed.
 
-Keep the major gate order M1→M2→M3→M4, while allowing engineering work across those milestones to overlap. Do not assign teammates permanently by OSI layer without a shared interface contract and a weekly integration result.
+We'll aim for demonstrations in the order M1→M2→M3→M4 while development overlaps. A weekly check of how our pieces work together should help us catch interface problems early.
 
 ## Stretch scope and technical references
 
@@ -241,3 +301,5 @@ Automatic host configuration is another separate extension. DHCP can be provided
 AMD's lwIP echo-server example can seed Ethernet bring-up after checking board/BSP compatibility. Its port-7 application echo behavior alone is not a forwarding test. [AMD example](https://github.com/Xilinx/embeddedsw/blob/master/lib/sw_apps/lwip_echo_server/src/README.txt).
 
 AXI DMA implementation details must follow the selected IP configuration, including frame boundaries and completion lengths. [AMD AXI DMA scatter/gather documentation](https://docs.amd.com/r/en-US/pg021_axi_dma/Scatter/Gather-Mode). Recheck all APIs against the selected, pinned toolchain; these links are design references rather than a claim that a particular version is already installed.
+
+</details>
