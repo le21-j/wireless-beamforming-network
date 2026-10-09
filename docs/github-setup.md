@@ -1,6 +1,6 @@
 # GitHub organization
 
-The two nodes share the private repository [le21-j/wireless-beamforming-network](https://github.com/le21-j/wireless-beamforming-network), so frame definitions, FPGA logic, firmware and tests stay versioned together. The implementation plan, 34 issues and six milestones are published. Add source directories when their implementation tickets begin. Teammate accounts/assignments and licensing remain to be chosen; no project board has been created.
+The two nodes share the public repository [le21-j/wireless-beamforming-network](https://github.com/le21-j/wireless-beamforming-network), so frame definitions, FPGA logic, firmware and tests stay versioned together. The implementation plan, 34 issues and six milestones are published. Add source directories when their implementation tickets begin. Teammate accounts/assignments and licensing remain to be chosen; no project board has been created.
 
 ## Proposed source tree
 
