@@ -9,3 +9,9 @@
 .Xil/
 __pycache__/
 .venv/
+
+# Local lab captures and generated build records
+/docs/bringup/evidence/
+*.pcap
+*.manifest.txt
+*.log

@@ -1,6 +1,6 @@
 name: Capstone implementation task
 description: A bounded task with dependencies and measurable acceptance criteria
-title: "[ID] Concrete task title"
+title: "Describe the task"
 body:
   - type: input
     id: module

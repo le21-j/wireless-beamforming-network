@@ -40,20 +40,20 @@ capstone/
   tools/                  # PC traffic generation, capture and result analysis
 ```
 
-This tree is a proposal; only the planning documents and GitHub templates currently exist. Do not commit generated Vivado runs, caches, tool installations or large raw sample recordings by default. Keep the small source inputs and scripts required to reproduce a build. Store release binaries and large evidence separately with version/checksum references; establish any Git LFS policy only after agreeing on artifact sizes and hosting limits.
+The tree guides implementation. The production M1 Ethernet application, reusable test tools and setup notes now exist. Keep lab scripts, logs, saved results and build records in ignored local directories. Do not commit generated Vivado runs, caches, tool installations or raw sample recordings. Keep the source, tests and instructions teammates need to build and run the application.
 
 ## Milestones and issue fields
 
-The published milestones are M0 Foundations, M1 Local network, M2 Modem bench, M3 Routed wireless, M4 Direction aware, and M5 Optional extensions. [backlog.md](backlog.md) records the ticket specifications, and [github-issues.md](github-issues.md) maps every stable planning ID to its live issue. Published issue bodies link their prerequisites. IDs such as N02 are preserved in titles and are distinct from GitHub issue numbers.
+The published milestones are M0 Foundations, M1 Local network, M2 Modem bench, M3 Routed wireless, M4 Direction aware, and M5 Optional extensions. [backlog.md](backlog.md) records each task, and [github-issues.md](github-issues.md) links to its GitHub issue. Use the GitHub issue number and a plain task title. Link prerequisites by issue number. Work-area labels identify software, FPGA, RF and shared work.
 
 Configured labels:
 
 - Work area: `area:hardware-rf`, `area:fpga-verilog`, `area:embedded-software`, `area:host-software`, `area:integration-testing`. Each issue has at least one, and shared work can have several.
 - Module: `module:hardware`, `module:platform`, `module:network`, `module:modem`, `module:link`, `module:discovery`, `module:integration`.
-- Readiness: `status:ready` for work whose prerequisites are complete; `status:blocked` for unmet prerequisites. S01 is the initial Ready issue; update these labels as work advances.
+- Readiness: `status:ready` for work whose prerequisites are complete; `status:blocked` for unmet prerequisites. #1 is the initial Ready issue; update these labels as work advances.
 - Priority: `priority:P0` for the first three demonstrations and foundations, `priority:P1` for direction-aware integration, `priority:P2` for optional extensions.
 
-These priorities indicate execution order; M4 is still part of the requested direction-aware project. Give every issue one primary owner, a reviewer, a milestone, explicit prerequisite links, and observable acceptance criteria. Assign firmware/RTL boundary tickets such as F02 and F03 one accountable owner and a reviewer from the other side.
+These priorities indicate execution order; M4 is still part of the requested direction-aware project. Give every issue one primary owner, a reviewer, a milestone, explicit prerequisite links, and observable acceptance criteria. Assign firmware/RTL boundary tickets such as #10 and #14 one accountable owner and a reviewer from the other side.
 
 If a project board is added, use statuses **Backlog → Ready → In progress → Review → Done**, with **Blocked** for an explicit unmet prerequisite. Put an issue in Ready only when it can be implemented against stable contracts or clearly scoped mocks. Limit each teammate to one main implementation issue at a time; record useful independent work when blocked.
 
@@ -69,21 +69,21 @@ Area labels identify the technical work involved. Module labels identify the sub
 | [area:host-software](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Ahost-software%22) | Green | PC tools, simulation/reference models, scripts, automation and host provisioning |
 | [area:integration-testing](https://github.com/le21-j/wireless-beamforming-network/issues?q=is%3Aissue%20label%3A%22area%3Aintegration-testing%22) | Gray | Shared planning/contracts, cross-module bring-up, integration and system validation |
 
-Apply more than one area when the ticket includes meaningful work or validation in each. For example, F02 includes an AXI register block and its processor driver, so it has both FPGA/Verilog and embedded-software labels. D01 builds a PC reference model, so it has host-software. Dependencies alone do not require every upstream area label, and ordinary unit tests do not automatically make a ticket an integration task.
+Apply more than one area when the ticket includes meaningful work or validation in each. For example, #10 includes an AXI register block and its processor driver, so it has both FPGA/Verilog and embedded-software labels. #5 builds a PC reference model, so it has host-software. Dependencies alone do not require every upstream area label, and ordinary unit tests do not automatically make a ticket an integration task.
 
-All 34 initial issues are classified. For future issues, apply the matching area labels in GitHub alongside module, priority and readiness. Revisit labels when a ticket is split or its implementation scope changes; F04 and X02 currently span alternatives whose final partition remains a design decision.
+All 34 initial issues are classified. For future issues, apply the matching area labels in GitHub alongside module, priority and readiness. Revisit labels when a ticket is split or its implementation scope changes; #15 and #30 currently span alternatives whose final partition remains a design decision.
 
 ## Initial parallel assignments
 
 | Workstream | First decisions or preparation | First implementation sequence |
 |---|---|---|
-| Team/integration | S01, S02, S03 | S04, then recurring integration evidence |
-| Hardware/RF | H01, H03 | H02, later H04/H05 |
-| Network/platform | Toolchain, memory and Ethernet choices with S01 | F01, N01, N02 |
-| FPGA/transport | Agree registers, DMA and buffer ownership in S03 | F02, F03 |
-| Modem | Agree sample rates and framing in S03 | D01, D02, then D03/D04 |
+| Team/integration | #1, #3, #4 | #8, then recurring integration evidence |
+| Hardware/RF | #2, #7 | #16, later #24/#28 |
+| Network/platform | Toolchain, memory and Ethernet choices with #1 | #6, #11, #17 |
+| FPGA/transport | Agree registers, DMA and buffer ownership in #4 | #10, #14 |
+| Modem | Agree sample rates and framing in #4 | #5, #9, then #12/#13 |
 
-Combine workstreams to match the actual team. Avoid splitting a single DMA or packet format contract between independent owners without a reviewer. If a ticket needs more than roughly three focused working days, split it into child issues with separate testable outputs, keeping its original ID as the parent. D04 receiver synchronization and F03 DMA integration are likely candidates.
+Combine workstreams to match the actual team. Avoid splitting a single DMA or packet format contract between independent owners without a reviewer. If a ticket needs more than roughly three focused working days, split it into child issues with separate testable outputs, keeping its original ID as the parent. #13 receiver synchronization and #14 DMA integration are likely candidates.
 
 ## Definition of done
 
@@ -93,4 +93,4 @@ Each pull request should link its issue, describe the concrete behavior, identif
 
 ## Publication status
 
-The repository contains the reviewed planning documents and issue/PR templates. All 34 tickets are live, with linked prerequisites, acceptance checkboxes, work-area/module/priority/readiness labels and one of the six milestones. Individual assignees and due dates remain unset. No teammate invitations have been sent, and a GitHub project board has not been created. The older direction-finding HTML proposal is retained only in the local workspace and excluded from this repository.
+The repository contains the planning documents, issue/PR templates and M1 networking code. The published backlog has 34 tasks with linked prerequisites, acceptance checkboxes, work-area/module/priority/readiness labels and one of the six milestones. The M1 work has not closed those issues. Individual assignees and due dates remain unset. No teammate invitations have been sent, and a GitHub project board has not been created. The older direction-finding HTML proposal is retained only in the local workspace and excluded from this repository.

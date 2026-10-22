@@ -1,0 +1,15 @@
+name: Team file names
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  file-names:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: python3 tools/sw_check_file_names.py

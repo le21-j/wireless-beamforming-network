@@ -46,9 +46,9 @@ These areas overlap, so we can share them based on what everyone wants to work o
 
 ## Where we can start
 
-Our first shared task is [S01: hardware, scope and demo targets](https://github.com/le21-j/wireless-beamforming-network/issues/1). Once we've settled those basics, we can work on Ethernet/lwIP bring-up, the modem model and the hardware setup in parallel.
+Our first shared task is [#1: hardware, scope and demo targets](https://github.com/le21-j/wireless-beamforming-network/issues/1). Once we've settled those basics, we can work on Ethernet/lwIP bring-up, the modem model and the hardware setup in parallel.
 
-The [issue list](github-issues.md) has the individual tasks and their dependencies. The area labels help us find hardware, embedded software, FPGA/Verilog and host software work. The [reading guide](reading-guide.md) has a few starting links for each area.
+Follow the [project work order](github-issues.md) from M0 to M5. It lists each issue after its prerequisites. Tasks can run in parallel once their prerequisites are complete. The area labels help us find hardware, embedded software, FPGA/Verilog and host software work. The [reading guide](reading-guide.md) has a few starting links for each area.
 
 As we test, we'll track packet delivery, useful throughput, beam settings, discovery time and recovery time. The proposed test targets are in the notes below; we'll refine them around the hardware we choose.
 
@@ -59,125 +59,125 @@ As we test, we'll track packet delivery, useful throughput, beam settings, disco
 
 ## Dependency graph
 
-The arrows show which tasks build on earlier work. Separate branches can move in parallel, and the diamonds mark demonstrations. IDs like N02 match the [backlog](backlog.md) and [issue index](github-issues.md); GitHub issue numbers are separate. The backlog has the full prerequisite list.
+The arrows show which tasks build on earlier work. Separate branches can move in parallel, and the diamonds mark demonstrations. Each task uses its GitHub issue number, matching the [backlog](backlog.md) and [issue index](github-issues.md). The backlog has the full prerequisite list.
 
 ```mermaid
 flowchart TB
   subgraph foundation["M0 — Scope and shared foundations"]
-    S01["S01 · Board, scope and demo targets"]
-    S02["S02 · Reproducible tools and repository"]
-    S03["S03 · Packet, register and buffer contracts"]
-    H01["H01 · Processor, Ethernet and RF feasibility"]
-    S01 --> S02
-    S01 --> S03
-    S01 --> H01
+    issue1["#1 · Board, scope and demo targets"]
+    issue3["#3 · Reproducible tools and repository"]
+    issue4["#4 · Packet, register and buffer contracts"]
+    issue2["#2 · Processor, Ethernet and RF feasibility"]
+    issue1 --> issue3
+    issue1 --> issue4
+    issue1 --> issue2
   end
 
   subgraph net["Software and network firmware"]
-    F01["F01 · Boot, BSP, UART and timers"]
-    N01["N01 · Ethernet MAC, PHY and lwIP"]
-    N02["N02 · Local ICMP and UDP on both nodes"]
-    N03["N03 · Mock radio0 IP interface"]
-    N04["N04 · Routes and two-interface forwarding"]
-    N05["N05 · Connect routing to wireless transport"]
-    F01 --> N01 --> N02 --> N03 --> N04 --> N05
+    issue6["#6 · Boot, BSP, UART and timers"]
+    issue11["#11 · Ethernet MAC, PHY and lwIP"]
+    issue17["#17 · Local ICMP and UDP on both nodes"]
+    issue20["#20 · Mock radio0 IP interface"]
+    issue22["#22 · Routes and two-interface forwarding"]
+    issue27["#27 · Connect routing to wireless transport"]
+    issue6 --> issue11 --> issue17 --> issue20 --> issue22 --> issue27
   end
 
   subgraph transport["Firmware and FPGA packet transport"]
-    F02["F02 · AXI control registers and driver"]
-    F03["F03 · DMA, buffers and packet loopback"]
-    F04["F04 · TDD, ACKs, retry and bounded queues"]
-    F02 --> F03
-    F02 --> F04
+    issue10["#10 · AXI control registers and driver"]
+    issue14["#14 · DMA, buffers and packet loopback"]
+    issue15["#15 · TDD, ACKs, retry and bounded queues"]
+    issue10 --> issue14
+    issue10 --> issue15
   end
 
   subgraph modem["Modem software model and FPGA logic"]
-    D01["D01 · Reference modem and frame format"]
-    D02["D02 · Fixed-point golden vectors"]
-    D03["D03 · TX framing, mapping and filtering"]
-    D04["D04 · RX detection, timing, carrier and CRC"]
-    D05["D05 · Digital modem loopback"]
-    D06["D06 · Two-node conducted RF packets"]
-    D07["D07 · Bidirectional fixed-link OTA packets"]
-    D01 --> D02
-    D02 --> D03 --> D05
-    D02 --> D04 --> D05
-    D05 --> D06 --> D07
+    issue5["#5 · Reference modem and frame format"]
+    issue9["#9 · Fixed-point golden vectors"]
+    issue12["#12 · TX framing, mapping and filtering"]
+    issue13["#13 · RX detection, timing, carrier and CRC"]
+    issue19["#19 · Digital modem loopback"]
+    issue21["#21 · Two-node conducted RF packets"]
+    issue23["#23 · Bidirectional fixed-link OTA packets"]
+    issue5 --> issue9
+    issue9 --> issue12 --> issue19
+    issue9 --> issue13 --> issue19
+    issue19 --> issue21 --> issue23
   end
 
   subgraph hardware["Hardware and RF"]
-    H02["H02 · Converter and single RF path bring-up"]
-    H03["H03 · Link budget and attenuated RF bench"]
-    H04["H04 · Coherent channels and calibration"]
-    H05["H05 · Beam codebook and measured patterns"]
-    H02 --> H04
-    H03 --> H04
-    H04 --> H05
+    issue16["#16 · Converter and single RF path bring-up"]
+    issue7["#7 · Link budget and attenuated RF bench"]
+    issue24["#24 · Coherent channels and calibration"]
+    issue28["#28 · Beam codebook and measured patterns"]
+    issue16 --> issue24
+    issue7 --> issue24
+    issue24 --> issue28
   end
 
   subgraph direction["Direction-aware firmware and FPGA control"]
-    B01["B01 · FPGA beamformer and atomic control"]
-    B02["B02 · Discovery rendezvous state machine"]
-    B03["B03 · Directional HAIL and matching ACK"]
-    B04["B04 · Fresh neighbor state and route binding"]
-    B05["B05 · Blockage, rediscovery and traffic recovery"]
-    B01 --> B03
-    B02 --> B03 --> B04 --> B05
+    issue26["#26 · FPGA beamformer and atomic control"]
+    issue18["#18 · Discovery rendezvous state machine"]
+    issue31["#31 · Directional HAIL and matching ACK"]
+    issue32["#32 · Fresh neighbor state and route binding"]
+    issue33["#33 · Blockage, rediscovery and traffic recovery"]
+    issue26 --> issue31
+    issue18 --> issue31 --> issue32 --> issue33
   end
 
   subgraph evidence["Integration and measured demonstrations"]
-    S04["S04 · Host tests, captures and reports"]
+    issue8["#8 · Host tests, captures and reports"]
     M1{"M1 · Each PC pings its local FPGA"}
     M2{"M2 · Valid modem packets in both directions"}
-    S05["S05 · PC-to-PC regression and performance"]
+    issue29["#29 · PC-to-PC regression and performance"]
     M3{"M3 · PC-to-PC ping, UDP and TCP over RF"}
     M4{"M4 · Automatic beam discovery and recovery"}
   end
 
   subgraph stretch["M5 — Optional extensions"]
-    X01["X01 · Transparent Ethernet L2 bridge"]
-    X02["X02 · DHCP or host provisioning"]
-    X03["X03 · FEC or higher throughput"]
+    issue34["#34 · Transparent Ethernet L2 bridge"]
+    issue30["#30 · DHCP or host provisioning"]
+    issue25["#25 · FEC or higher throughput"]
   end
 
-  H01 --> F01
-  S02 --> F01
-  S03 --> F02
-  F01 --> F02
-  S03 --> D01
-  S03 --> N03
-  S03 --> S04
-  S04 --> N02
-  N02 --> M1
-  H01 --> H02
-  F02 --> H02
-  H01 --> H03
-  F03 --> D05
-  H02 --> D06
-  H03 --> D06
-  D06 --> M2
-  D01 --> F04
-  F04 --> D07
-  F03 --> N05
-  F04 --> N05
-  D07 --> N05
-  N05 --> S05
-  S04 --> S05
-  S05 --> M3
-  D06 --> H04
-  H04 --> B01
-  B01 --> H05
-  H05 --> B03
-  F02 --> B01
-  S03 --> B02
-  F04 --> B02
-  D07 --> B03
-  N05 --> B04
-  S05 --> B05
-  B05 --> M4
-  B05 --> X01
-  N05 --> X02
-  D06 --> X03
+  issue2 --> issue6
+  issue3 --> issue6
+  issue4 --> issue10
+  issue6 --> issue10
+  issue4 --> issue5
+  issue4 --> issue20
+  issue4 --> issue8
+  issue8 --> issue17
+  issue17 --> M1
+  issue2 --> issue16
+  issue10 --> issue16
+  issue2 --> issue7
+  issue14 --> issue19
+  issue16 --> issue21
+  issue7 --> issue21
+  issue21 --> M2
+  issue5 --> issue15
+  issue15 --> issue23
+  issue14 --> issue27
+  issue15 --> issue27
+  issue23 --> issue27
+  issue27 --> issue29
+  issue8 --> issue29
+  issue29 --> M3
+  issue21 --> issue24
+  issue24 --> issue26
+  issue26 --> issue28
+  issue28 --> issue31
+  issue10 --> issue26
+  issue4 --> issue18
+  issue15 --> issue18
+  issue23 --> issue31
+  issue27 --> issue32
+  issue29 --> issue33
+  issue33 --> M4
+  issue33 --> issue34
+  issue27 --> issue30
+  issue21 --> issue25
 ```
 
 </details>
@@ -227,27 +227,29 @@ The direction-aware research contribution remains measurable: discovery determin
 
 HAIL and ACK are link-control frames that work before an IP route exists. A matching bidirectional exchange updates the neighbor table; the route manager then activates the remote-LAN route using a configured peer-to-prefix mapping. Energy detection alone does not validate a neighbor. Record separate local TX and RX beam IDs and remote selections where exchanged; local angle conventions are not automatically identical at the two nodes.
 
-Route expiry must prevent unintended forwarding. Returning `NULL` from the lwIP route hook resumes ordinary route lookup rather than explicitly dropping the packet. Ensure a withdrawn remote-LAN route cannot fall back to an inappropriate default interface, and revalidate or discard queued radio packets when their neighbor expires. B04/B05 must demonstrate this behavior. [lwIP hook return behavior](https://www.nongnu.org/lwip/2_1_x/group__lwip__opts__hooks.html).
+Route expiry must prevent unintended forwarding. Returning `NULL` from the lwIP route hook resumes ordinary route lookup rather than explicitly dropping the packet. Ensure a withdrawn remote-LAN route cannot fall back to an inappropriate default interface, and revalidate or discard queued radio packets when their neighbor expires. #32/#33 must demonstrate this behavior. [lwIP hook return behavior](https://www.nongnu.org/lwip/2_1_x/group__lwip__opts__hooks.html).
 
 ## Modules and ownership boundaries
 
 We can split these areas across the team, with a primary owner and someone to review each part. When a change affects two modules, the people working on both can check it together.
 
-| Module | Work and suggested location | Inputs and deliverable | Initial ticket families |
+| Module | Work and suggested location | Inputs and deliverable | Issues |
 |---|---|---|---|
-| Hardware and RF | `hardware/`: board map, Ethernet PHY connections, converters/transceivers, clocks/LO, antennas, RF fixtures, calibration measurements | Selected hardware → known sample path and measured calibrated beams | H01–H05 |
-| Embedded platform and transport | `firmware/platform/`, `firmware/drivers/`, `fpga/rtl/transport/`: boot, timers, AXI registers, DMA, interrupts, caches, buffer ownership | CPU packets and control → reliable FPGA transfers with bounded queues | F01–F03 |
-| Networking | `firmware/net/`: Ethernet adapter, `radio0`, lwIP settings, route policy, IP packet forwarding | Valid IP packets and link state → local ICMP plus PC-to-PC connectivity | N01–N05 |
-| Modem | `sim/`, `fpga/rtl/modem/`: reference models, framing, fixed point, modulation, filtering, burst acquisition, timing/carrier recovery, CRC | Link frames ↔ baseband samples | D01–D07 |
-| Link scheduling and beam control | `firmware/link/`, `fpga/rtl/beam/`: TDD ownership, ACK/retry, TX weighting, RX combining, atomic coefficient application | Frames, samples, beam requests and RF timing → scheduled transmissions, steered samples and confirmed beam state | F04, B01 |
-| Discovery and directional policy | `firmware/discovery/`: rendezvous, HAIL validation, neighbor lifecycle, quality, freshness, hysteresis | Validated link events → usable peer and beam selection, expiry and recovery | B02–B05 |
-| Integration and tooling | `tools/`, `tests/`, `docs/`: contracts, repeatable builds, host traffic tools, evidence, regression and demonstrations | All module outputs → reproducible milestone evidence | S01–S05 |
+| Hardware and RF | `hardware/`: board map, Ethernet PHY connections, converters/transceivers, clocks/LO, antennas, RF fixtures, calibration measurements | Selected hardware → known sample path and measured calibrated beams | #2, #16, #7, #24, #28 |
+| Embedded platform and transport | `firmware/platform/`, `firmware/drivers/`, `fpga/rtl/transport/`: boot, timers, AXI registers, DMA, interrupts, caches, buffer ownership | CPU packets and control → reliable FPGA transfers with bounded queues | #6, #10, #14 |
+| Networking | `firmware/net/`: Ethernet adapter, `radio0`, lwIP settings, route policy, IP packet forwarding | Valid IP packets and link state → local ICMP plus PC-to-PC connectivity | #11, #17, #20, #22, #27 |
+| Modem | `sim/`, `fpga/rtl/modem/`: reference models, framing, fixed point, modulation, filtering, burst acquisition, timing/carrier recovery, CRC | Link frames ↔ baseband samples | #5, #9, #12, #13, #19, #21, #23 |
+| Link scheduling and beam control | `firmware/link/`, `fpga/rtl/beam/`: TDD ownership, ACK/retry, TX weighting, RX combining, atomic coefficient application | Frames, samples, beam requests and RF timing → scheduled transmissions, steered samples and confirmed beam state | #15, #26 |
+| Discovery and directional policy | `firmware/discovery/`: rendezvous, HAIL validation, neighbor lifecycle, quality, freshness, hysteresis | Validated link events → usable peer and beam selection, expiry and recovery | #18, #31, #32, #33 |
+| Integration and tooling | `tools/`, `tests/`, `docs/`: contracts, repeatable builds, host traffic tools, evidence, regression and demonstrations | All module outputs → reproducible milestone evidence | #1, #3, #4, #8, #29 |
 
-The hardware owner owns channel calibration in H04 and the measured codebook in H05. The beam-control owner implements or integrates the sample-weighting/combining datapath and coefficient application in B01. The discovery owner chooses among validated beam entries. The network owner turns usable-neighbor state into forwarding policy. This separates tasks that otherwise tend to be assigned ambiguously as "beamforming."
+The hardware owner owns channel calibration in #24 and the measured codebook in #28. The beam-control owner implements or integrates the sample-weighting/combining datapath and coefficient application in #26. The discovery owner chooses among validated beam entries. The network owner turns usable-neighbor state into forwarding policy. This separates tasks that otherwise tend to be assigned ambiguously as "beamforming."
 
-B01 first validates known weights against H04 calibration: TX distributes and weights samples across antenna paths; RX aligns, weights and combines samples before modem decoding. H05 then measures the resulting patterns and validates the steering codebook. If the chosen front end performs part of this in hardware, document that boundary and test the integrated behavior. D06 can test each direction in separate manually controlled runs before F04 supplies automated half-duplex scheduling.
+#26 first validates known weights against #24 calibration: TX distributes and weights samples across antenna paths; RX aligns, weights and combines samples before modem decoding. #28 then measures the resulting patterns and validates the steering codebook. If the chosen front end performs part of this in hardware, document that boundary and test the integrated behavior. #21 can test each direction in separate manually controlled runs before #15 supplies automated half-duplex scheduling.
 
 ## Milestone exit criteria
+
+The M1 source uses lwIP over Linux USB Ethernet. The original bare-metal or RTOS board support, physical cable reconnection and second companion PC still need validation. See the [M1 team guide](bringup/sw_m1_team_review.md) for the source and setup steps. Saved bench results stay local.
 
 | Milestone | Required demonstration | Proposed evidence and initial gate |
 |---|---|---|
@@ -255,10 +257,10 @@ B01 first validates known weights against H04 calibration: TX distributes and we
 | M1 Local network | Each PC can ping its own node over Ethernet | After ARP warm-up, 1,000 ICMP replies out of 1,000 on each local connection; UDP payload preserved; save capture, UART log and build ID |
 | M2 Modem bench | Independent nodes exchange CRC-valid payloads over conducted RF | Ideal digital cases match reference; corrupt frames rejected; 10,000 frames per direction with packet error rate at most 1% at a recorded operating point; report unique payload delivery separately from retries |
 | M3 Routed wireless | PC A and PC B communicate through both FPGA nodes over a fixed wireless path | At least 99% of 1,000 pings each direction; 10-minute sequenced UDP run at a stated rate below measured capacity with at most 1% loss; 10 MB TCP file with matching SHA-256; route/TTL and link interruption evidence |
-| M4 Direction aware | Nodes discover a beam pair, install usable forwarding state, and recover after disturbance | 20 controlled discovery/recovery trials; at least 19 restore traffic within a timeout chosen from the scan schedule in S01/B02; record angle, quality, discovery time, route expiry and recovery time |
+| M4 Direction aware | Nodes discover a beam pair, install usable forwarding state, and recover after disturbance | 20 controlled discovery/recovery trials; at least 19 restore traffic within a timeout chosen from the scan schedule in #1/#18; record angle, quality, discovery time, route expiry and recovery time |
 | M5 Optional | L2 bridge, easier host setup or modem performance extension | Separate acceptance test for each approved extension; completion is not needed to claim M1–M4 |
 
-For every RF result, record carrier frequency, modulation, symbol/sample rates, packet lengths, gains, attenuation or distance/orientation, oscillator arrangement and build IDs. Report both pre-retry packet errors and application delivery so retries do not hide modem problems. Throughput, range, bandwidth and recovery-time commitments remain unset until S01 establishes feasible targets.
+For every RF result, record carrier frequency, modulation, symbol/sample rates, packet lengths, gains, attenuation or distance/orientation, oscillator arrangement and build IDs. Report both pre-retry packet errors and application delivery so retries do not hide modem problems. Throughput, range, bandwidth and recovery-time commitments remain unset until #1 establishes feasible targets.
 
 ## Shared contracts to freeze early
 
@@ -273,7 +275,7 @@ For every RF result, record carrier frequency, modulation, symbol/sample rates, 
 
 Proposed buffer strategy: start with bounded copies between lwIP and dedicated DMA buffers. Make ownership explicit before optimizing for zero-copy. RF will often drain more slowly than Ethernet arrives; queue-full and link-down paths must fail predictably instead of allocating indefinitely.
 
-For a raw-IP radio interface, do not forward local Ethernet headers or require Ethernet ARP on that radio path. Recompute or validate the appropriate IP/transport checksums in software unless the actual radio datapath provides equivalent offload. At S03 choose an explicit MTU policy: either constrain every test endpoint to an agreed supported IP MTU, or implement and test the needed fragmentation/reassembly and DF/ICMP behavior. Do not silently truncate a 1,500-byte IP packet to fit a smaller radio payload.
+For a raw-IP radio interface, do not forward local Ethernet headers or require Ethernet ARP on that radio path. Recompute or validate the appropriate IP/transport checksums in software unless the actual radio datapath provides equivalent offload. At #4 choose an explicit MTU policy: either constrain every test endpoint to an agreed supported IP MTU, or implement and test the needed fragmentation/reassembly and DF/ICMP behavior. Do not silently truncate a 1,500-byte IP packet to fit a smaller radio payload.
 
 Use one supported lwIP execution model. In bare-metal mainloop mode, service input and timers from the intended context; DMA interrupts should hand off work rather than calling arbitrary lwIP paths. An RTOS design must respect its lwIP core-thread rules. [lwIP mainloop guidance](https://www.nongnu.org/lwip/2_1_x/group__lwip__nosys.html).
 
@@ -288,7 +290,7 @@ Use one supported lwIP execution model. In bare-metal mainloop mode, service inp
 
 ## First work to start
 
-After S01, S02, S03 and H01 can move in parallel. Once we've agreed on the interfaces, networking/platform work follows F01→N01→N02, modem work starts with D01→D02, hardware work starts with H03 and preparation for H02, and test tooling starts with S04. F02/F03 and the radio mock N03 let us try the interfaces while the modem RTL is still being developed.
+After #1, #3, #4 and #2 can move in parallel. Once we've agreed on the interfaces, networking/platform work follows #6→#11→#17, modem work starts with #5→#9, hardware work starts with #7 and preparation for #16, and test tooling starts with #8. #10/#14 and the radio mock #20 let us try the interfaces while the modem RTL is still being developed.
 
 We'll aim for demonstrations in the order M1→M2→M3→M4 while development overlaps. A weekly check of how our pieces work together should help us catch interface problems early.
 

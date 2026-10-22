@@ -1,63 +1,66 @@
 # Implementation ticket backlog
 
-These **34 ticket specifications are published as GitHub issues** in [le21-j/wireless-beamforming-network](https://github.com/le21-j/wireless-beamforming-network/issues). The IDs are stable planning references, distinct from GitHub issue numbers; use the [live issue index](github-issues.md) for direct links. Published issue bodies include linked prerequisites and acceptance checkboxes. Use the [project plan](project-plan.md) for the architecture, dependency graph, address plan and module boundaries.
+These **34 task specifications are published as GitHub issues** in [le21-j/wireless-beamforming-network](https://github.com/le21-j/wireless-beamforming-network/issues). Each task uses its GitHub issue number. The list follows M0 to M5, with prerequisites first. Issue numbers are fixed identifiers, not the work sequence. The [issue index](github-issues.md) links to each task and its prerequisites. Use the [project plan](project-plan.md) for the architecture, dependency graph, address plan and module boundaries.
 
 Owner roles below name workstreams, not individual teammates. Assign one primary owner and one reviewer to each ticket. A shared interface change needs review from both affected modules. Priorities are P0 for M0–M3, P1 for M4, and P2 for optional M5 work. Milestones identify the required demonstration; they do not prevent useful work from starting in parallel once prerequisites are met.
 
-Numeric acceptance gates are **proposed initial targets for ratification in S01**, not measured results or hardware performance guarantees. Throughput, RF operating point, MTU and discovery timeout remain decisions until the hardware and budgets are known. If F03, D04 or another ticket grows beyond roughly three focused working days, split it into child tasks while preserving the parent ID and its acceptance gate. No calendar estimates or teammate assignments are implied.
+Numeric acceptance gates are **proposed initial targets for ratification in #1**, not measured results or hardware performance guarantees. Throughput, RF operating point, MTU and discovery timeout remain decisions until the hardware and budgets are known. If #14, #13 or another ticket grows beyond roughly three focused working days, split it into child tasks while preserving the parent ID and its acceptance gate. No calendar estimates or teammate assignments are implied.
 
-## Index
+## Work order
 
-| ID | Ticket | Milestone | Priority | Depends on |
+| Issue | Task | Milestone | Priority | Depends on |
 |---|---|---|---|---|
-| [S01](#s01--decide-hardware-scope-and-demo-targets) | Decide hardware, scope and demo targets | M0 | P0 | None |
-| [S02](#s02--make-the-repository-and-tool-versions-reproducible) | Make the repository and tool versions reproducible | M0 | P0 | S01 |
-| [S03](#s03--freeze-ip-frame-register-and-buffer-contracts) | Freeze IP, frame, register and buffer contracts | M0 | P0 | S01 |
-| [S04](#s04--build-the-host-test-harness-and-evidence-format) | Build the host test harness and evidence format | M1 | P0 | S01, S03 |
-| [S05](#s05--measure-pc-to-pc-performance-and-run-regression) | Measure PC-to-PC performance and run regression | M3 | P0 | N05, S04 |
-| [H01](#h01--verify-board-ethernet-clock-and-processor-feasibility) | Verify board Ethernet, clock and processor feasibility | M0 | P0 | S01 |
-| [H02](#h02--bring-up-converters-and-one-rf-iq-path) | Bring up converters and one RF I/Q path | M2 | P0 | H01, F02 |
-| [H03](#h03--prepare-the-rf-bench-link-budget-and-attenuators) | Prepare the RF bench, link budget and attenuators | M2 | P0 | H01, S01 |
-| [H04](#h04--establish-coherent-timing-and-calibration-for-four-rf-paths) | Establish coherent timing and calibration for four RF paths | M4 | P1 | H02, H03, D06 |
-| [H05](#h05--create-the-beam-codebook-and-measure-patterns) | Create the beam codebook and measure patterns | M4 | P1 | H04, B01 |
-| [F01](#f01--bring-up-boot-bsp-uart-and-timers) | Bring up boot, BSP, UART and timers | M1 | P0 | H01, S02 |
-| [F02](#f02--implement-axi-lite-controlstatus-rtl-and-driver) | Implement AXI-Lite control/status RTL and driver | M2 | P0 | F01, S03 |
-| [F03](#f03--prove-dma-packet-loopback-and-buffer-ownership) | Prove DMA packet loopback and buffer ownership | M2 | P0 | F02, S03 |
-| [F04](#f04--implement-the-half-duplex-tdd-scheduler) | Implement the half-duplex TDD scheduler | M3 | P0 | S03, F02, D01 |
-| [N01](#n01--bring-up-ethernet-mac-phy-eth0-and-lwip) | Bring up Ethernet MAC, PHY, eth0 and lwIP | M1 | P0 | F01 |
-| [N02](#n02--prove-local-pc-icmp-and-udp-on-both-boards) | Prove local PC ICMP and UDP on both boards | M1 | P0 | N01, S04 |
-| [N03](#n03--implement-radio0-with-a-mock-ip-backend) | Implement radio0 with a mock IP backend | M3 | P0 | N02, S03 |
-| [N04](#n04--prove-routes-and-actual-ip-forwarding-without-rf) | Prove routes and actual IP forwarding without RF | M3 | P0 | N03 |
-| [N05](#n05--bind-radio0-to-wireless-dma-and-connect-the-pcs) | Bind radio0 to wireless DMA and connect the PCs | M3 | P0 | N04, F03, F04, D07 |
-| [D01](#d01--build-the-floating-point-modem-reference-and-link-framing) | Build the floating-point modem reference and link framing | M2 | P0 | S03 |
-| [D02](#d02--produce-fixed-point-reference-vectors) | Produce fixed-point reference vectors | M2 | P0 | D01 |
-| [D03](#d03--implement-the-fpga-transmit-modem) | Implement the FPGA transmit modem | M2 | P0 | D02 |
-| [D04](#d04--implement-the-fpga-receive-modem) | Implement the FPGA receive modem | M2 | P0 | D02 |
-| [D05](#d05--prove-digital-frame-modem-loopback) | Prove digital frame modem loopback | M2 | P0 | D03, D04, F03 |
-| [D06](#d06--prove-bidirectional-conducted-rf-with-independent-oscillators) | Prove bidirectional conducted RF with independent oscillators | M2 | P0 | D05, H02, H03 |
-| [D07](#d07--prove-an-ota-packet-link-with-fixed-antennas-or-beams) | Prove an OTA packet link with fixed antennas or beams | M3 | P0 | D06, F04 |
-| [B01](#b01--implement-the-beamformer-and-atomic-beam-control) | Implement the beamformer and atomic beam control | M4 | P1 | H04, F02 |
-| [B02](#b02--simulate-discovery-and-rendezvous) | Simulate discovery and rendezvous | M4 | P1 | S03, F04 |
-| [B03](#b03--run-directional-hailack-sweeps-over-the-air) | Run directional HAIL/ACK sweeps over the air | M4 | P1 | B01, B02, D07, H05 |
-| [B04](#b04--integrate-fresh-neighborbeam-state-with-routing) | Integrate fresh neighbor/beam state with routing | M4 | P1 | B03, N05 |
-| [B05](#b05--prove-blockage-rediscovery-and-end-to-end-recovery) | Prove blockage, rediscovery and end-to-end recovery | M4 | P1 | B04, S05 |
-| [X01](#x01--optionally-implement-an-actual-l2-ethernet-bridge) | Optionally implement an actual L2 Ethernet bridge | M5 | P2 | B05 |
-| [X02](#x02--add-per-lan-dhcp-or-host-provisioning-convenience) | Add per-LAN DHCP or host provisioning convenience | M5 | P2 | N05 |
-| [X03](#x03--evaluate-adaptive-throughput-or-a-fec-upgrade) | Evaluate adaptive throughput or a FEC upgrade | M5 | P2 | D06 |
+| [#1](#issue-1) | Decide hardware, scope and demo targets | M0 | P0 | None |
+| [#2](#issue-2) | Verify board Ethernet, clock and processor feasibility | M0 | P0 | #1 |
+| [#3](#issue-3) | Make the repository and tool versions reproducible | M0 | P0 | #1 |
+| [#4](#issue-4) | Freeze IP, frame, register and buffer contracts | M0 | P0 | #1 |
+| [#6](#issue-6) | Bring up boot, BSP, UART and timers | M1 | P0 | #2, #3 |
+| [#8](#issue-8) | Build the host test harness and evidence format | M1 | P0 | #1, #4 |
+| [#11](#issue-11) | Bring up Ethernet MAC, PHY, eth0 and lwIP | M1 | P0 | #6 |
+| [#17](#issue-17) | Prove local PC ICMP and UDP on both boards | M1 | P0 | #11, #8 |
+| [#5](#issue-5) | Build the floating-point modem reference and link framing | M2 | P0 | #4 |
+| [#7](#issue-7) | Prepare the RF bench, link budget and attenuators | M2 | P0 | #2, #1 |
+| [#9](#issue-9) | Produce fixed-point reference vectors | M2 | P0 | #5 |
+| [#10](#issue-10) | Implement AXI-Lite control/status RTL and driver | M2 | P0 | #6, #4 |
+| [#12](#issue-12) | Implement the FPGA transmit modem | M2 | P0 | #9 |
+| [#13](#issue-13) | Implement the FPGA receive modem | M2 | P0 | #9 |
+| [#14](#issue-14) | Prove DMA packet loopback and buffer ownership | M2 | P0 | #10, #4 |
+| [#16](#issue-16) | Bring up converters and one RF I/Q path | M2 | P0 | #2, #10 |
+| [#19](#issue-19) | Prove digital frame modem loopback | M2 | P0 | #12, #13, #14 |
+| [#21](#issue-21) | Prove bidirectional conducted RF with independent oscillators | M2 | P0 | #19, #16, #7 |
+| [#15](#issue-15) | Implement the half-duplex TDD scheduler | M3 | P0 | #4, #10, #5 |
+| [#20](#issue-20) | Implement radio0 with a mock IP backend | M3 | P0 | #17, #4 |
+| [#22](#issue-22) | Prove routes and actual IP forwarding without RF | M3 | P0 | #20 |
+| [#23](#issue-23) | Prove an OTA packet link with fixed antennas or beams | M3 | P0 | #21, #15 |
+| [#27](#issue-27) | Bind radio0 to wireless DMA and connect the PCs | M3 | P0 | #22, #14, #15, #23 |
+| [#29](#issue-29) | Measure PC-to-PC performance and run regression | M3 | P0 | #27, #8 |
+| [#18](#issue-18) | Simulate discovery and rendezvous | M4 | P1 | #4, #15 |
+| [#24](#issue-24) | Establish coherent timing and calibration for four RF paths | M4 | P1 | #16, #7, #21 |
+| [#26](#issue-26) | Implement the beamformer and atomic beam control | M4 | P1 | #24, #10 |
+| [#28](#issue-28) | Create the beam codebook and measure patterns | M4 | P1 | #24, #26 |
+| [#31](#issue-31) | Run directional HAIL/ACK sweeps over the air | M4 | P1 | #26, #18, #23, #28 |
+| [#32](#issue-32) | Integrate fresh neighbor/beam state with routing | M4 | P1 | #31, #27 |
+| [#33](#issue-33) | Prove blockage, rediscovery and end-to-end recovery | M4 | P1 | #32, #29 |
+| [#25](#issue-25) | Evaluate adaptive throughput or a FEC upgrade | M5 | P2 | #21 |
+| [#30](#issue-30) | Add per-LAN DHCP or host provisioning convenience | M5 | P2 | #27 |
+| [#34](#issue-34) | Optionally implement an actual L2 Ethernet bridge | M5 | P2 | #33 |
 
-## Ready and next
+## Prerequisites and parallel work
 
-- **Ready now:** S01. Resolve the exact hardware, intended demonstrations and proposed gates as a team.
-- **After S01:** S02, S03 and H01 can proceed in parallel.
-- **After those foundations:** F01 begins platform/network bring-up; D01 begins modem modeling; H03 prepares the RF fixture; S04 builds host tests. Each starts only after its listed prerequisites.
-- **Next independent integration targets:** F02/F03 provide packet transport; N03/N04 exercise forwarding using the mock backend; D02/D03/D04 develop the modem. Hardware work prepares H02 while the digital models mature.
-- **Main demonstrations:** N02 closes M1, D06 closes M2, S05 closes M3 and B05 closes M4. Preserve a working fixed-link M3 configuration while developing discovery.
+- **Ready now:** #1. Resolve the exact hardware, intended demonstrations and proposed gates as a team.
+- **After #1:** #3, #4 and #2 can proceed in parallel.
+- **After those foundations:** #6 begins platform/network bring-up; #5 begins modem modeling; #7 prepares the RF fixture; #8 builds host tests. Each starts only after its listed prerequisites.
+- **Next independent integration targets:** #10/#14 provide packet transport; #20/#22 exercise forwarding using the mock backend; #9/#12/#13 develop the modem. Hardware work prepares #16 while the digital models mature.
+- **Main demonstrations:** #17 closes M1, #21 closes M2, #29 closes M3 and #33 closes M4. Preserve a working fixed-link M3 configuration while developing discovery.
 
 For every completed ticket, link the code/design changes and store an evidence report with build IDs, configuration, commands or procedure, expected result, actual result and failures. RF reports also record carrier, modulation, symbol/sample rates, payload lengths, gains, attenuation or distance/orientation, and oscillator arrangement. Keep first-attempt packet error rate separate from final delivery after retries.
 
-## System and integration tickets
+## M0 Foundations
 
-### S01 — Decide hardware, scope and demo targets
+<a id="s01--decide-hardware-scope-and-demo-targets"></a>
+<a id="issue-1"></a>
+
+### #1 — Decide hardware, scope and demo targets
 
 **Owner role:** Integration and tooling, with all module owners. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** None.
 
@@ -72,23 +75,46 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Decision record, hardware inventory, owner matrix and approved gate table.
 
-### S02 — Make the repository and tool versions reproducible
+<a id="h01--verify-board-ethernet-clock-and-processor-feasibility"></a>
+<a id="issue-2"></a>
 
-**Owner role:** Integration and tooling. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** S01.
+### #2 — Verify board Ethernet, clock and processor feasibility
+
+**Owner role:** Hardware and RF. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** #1.
+
+**Scope:** Check the physical platform against the proposed architecture before committing to processor, converter, Ethernet and beamformer implementations.
+
+**Acceptance:**
+
+- Draw the processor/memory, Ethernet MAC/PHY, converter/transceiver, clocks/LO and antenna-path map for each node.
+- Confirm usable Ethernet ports, processor memory, FPGA interfaces/pin constraints, converter data path and tool/IP support against the selected hardware documentation.
+- Resolve whether four DAC/ADC channels actually provide four RF antenna paths; record any missing hardware and a feasible single-path baseline.
+
+**Evidence:** Annotated block diagram, part/document references, port/channel map and feasibility decision.
+
+<a id="s02--make-the-repository-and-tool-versions-reproducible"></a>
+<a id="issue-3"></a>
+
+### #3 — Make the repository and tool versions reproducible
+
+**Owner role:** Integration and tooling. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** #1.
 
 **Scope:** Establish the repository layout, pinned FPGA/embedded/model tool versions, setup steps, build entry points and handling of generated outputs.
 
 **Acceptance:**
 
 - Document exact tool/BSP/lwIP versions and required licensed components, with accessible setup instructions.
-- A teammate can reproduce the available baseline or template build from a clean checkout; record any hardware/vendor dependency still awaiting H01/F01.
+- A teammate can reproduce the available baseline or template build from a clean checkout; record any hardware/vendor dependency still awaiting #2/#6.
 - Source, constraints, scripts and configuration are versioned; generated binaries, caches and large build directories have an explicit storage policy.
 
 **Evidence:** Setup/build guide, version manifest and clean-checkout build log.
 
-### S03 — Freeze IP, frame, register and buffer contracts
+<a id="s03--freeze-ip-frame-register-and-buffer-contracts"></a>
+<a id="issue-4"></a>
 
-**Owner role:** Integration and tooling, reviewed by networking, transport, modem and discovery owners. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** S01.
+### #4 — Freeze IP, frame, register and buffer contracts
+
+**Owner role:** Integration and tooling, reviewed by networking, transport, modem and discovery owners. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** #1.
 
 **Scope:** Define the versioned boundaries that let module teams work independently: raw IPv4 radio packets, radio frame fields, CPU/FPGA registers, DMA ownership, beam application and link-state events.
 
@@ -101,112 +127,14 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Versioned interface specification, example frame bytes and review record.
 
-### S04 — Build the host test harness and evidence format
+## M1 Local network
 
-**Owner role:** Integration and tooling. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** S01, S03.
+<a id="f01--bring-up-boot-bsp-uart-and-timers"></a>
+<a id="issue-6"></a>
 
-**Scope:** Provide reusable host traffic, capture and reporting tools for local Ethernet, modem and later routed-wireless demonstrations.
+### #6 — Bring up boot, BSP, UART and timers
 
-**Acceptance:**
-
-- Scripts send/count ICMP and sequenced UDP traffic with known payloads, distinguish missing/duplicate/corrupt packets, and compute file SHA-256.
-- Host setup records interface addresses, specific remote-LAN routes, MTU and firewall rules used, with a documented cleanup procedure.
-- Reports include build/configuration IDs, timestamps, offered load, duration, counters and pass/fail thresholds; simulated loss/corruption produces a failure rather than a false pass.
-
-**Evidence:** Runnable harness, example passing/failing reports and capture procedure.
-
-### S05 — Measure PC-to-PC performance and run regression
-
-**Owner role:** Integration and tooling, supported by networking and modem owners. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** N05, S04.
-
-**Scope:** Run the full fixed-wireless demonstration between companion PCs and establish a reproducible baseline for future beam/discovery changes.
-
-**Acceptance:**
-
-- At least 99% of 1,000 ICMP requests succeed in each direction; report RTT distribution and timeout count.
-- A 10-minute sequenced UDP run at a stated rate below measured sustainable capacity loses at most 1%; report offered/delivered rates, duplicates and payload integrity for each tested direction.
-- A 10 MB TCP file crosses the link with identical source/destination SHA-256; captures confirm preserved PC endpoints and expected routed TTL handling.
-- Link interruption and restoration have bounded queues and no crash/leak; a repeatable regression run includes local ping and the fixed-link baseline.
-
-**Evidence:** M3 report, scripts/configurations, packet captures, RF operating point, counters and file hashes.
-
-## Hardware and RF tickets
-
-### H01 — Verify board Ethernet, clock and processor feasibility
-
-**Owner role:** Hardware and RF. **Milestone:** M0 foundations. **Priority:** P0. **Depends on:** S01.
-
-**Scope:** Check the physical platform against the proposed architecture before committing to processor, converter, Ethernet and beamformer implementations.
-
-**Acceptance:**
-
-- Draw the processor/memory, Ethernet MAC/PHY, converter/transceiver, clocks/LO and antenna-path map for each node.
-- Confirm usable Ethernet ports, processor memory, FPGA interfaces/pin constraints, converter data path and tool/IP support against the selected hardware documentation.
-- Resolve whether four DAC/ADC channels actually provide four RF antenna paths; record any missing hardware and a feasible single-path baseline.
-
-**Evidence:** Annotated block diagram, part/document references, port/channel map and feasibility decision.
-
-### H02 — Bring up converters and one RF I/Q path
-
-**Owner role:** Hardware and RF, supported by embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** H01, F02.
-
-**Scope:** Configure clocks, resets and converter/transceiver interfaces; prove a single transmit and receive sample path with known stimuli.
-
-**Acceptance:**
-
-- Converter clocks and status reach the documented stable state after reset; sample rate and I/Q/channel ordering are verified.
-- A known digital tone/pattern reaches the selected TX path and a known RX stimulus produces expected samples without unexplained clipping, lane swaps or data loss.
-- Gain, scaling, DC offset and frequency/sign conventions are recorded for the modem team; status/errors are visible through F02.
-
-**Evidence:** Bring-up procedure, register configuration, captured samples, instrument plots and clock/reset status logs.
-
-### H03 — Prepare the RF bench, link budget and attenuators
-
-**Owner role:** Hardware and RF. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** H01, S01.
-
-**Scope:** Design and document the conducted RF fixture and initial RF operating envelope using the actual selected hardware and test equipment.
-
-**Acceptance:**
-
-- Record expected/measured TX power, path and attenuator losses, RX limits, gain settings and measurement uncertainty at the selected frequency.
-- The cabled fixture, connectors, attenuators and any required isolation are identified; calculated receive levels remain within selected equipment ratings and usable range.
-- Provide a repeatable setup diagram and operating-point checklist, including independent-node oscillator configuration for D06.
-
-**Evidence:** Link-budget worksheet, fixture diagram, component ratings and measured power/loss results.
-
-### H04 — Establish coherent timing and calibration for four RF paths
-
-**Owner role:** Hardware and RF. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** H02, H03, D06.
-
-**Scope:** Extend the proven single-path system to the intended four RF antenna paths; measure deterministic alignment and separate TX/RX amplitude/phase corrections.
-
-**Acceptance:**
-
-- All intended RF paths have a verified channel map and deterministic timing/coherence behavior under the chosen clock/LO/reset arrangement.
-- Measure relative amplitude/phase across TX paths and across RX paths; validate calculated corrections offline or with existing converter controls and compare residuals against agreed tolerances. B01/H05 verify application in the implemented beamformer.
-- Repeat calibration checks after restart; document recalibration triggers and store versioned correction data with frequency/settings.
-
-**Evidence:** Multichannel timing captures, before/after calibration measurements, coefficients and restart-repeatability report.
-
-### H05 — Create the beam codebook and measure patterns
-
-**Owner role:** Hardware and RF, reviewed by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** H04, B01.
-
-**Scope:** Define array geometry, angle conventions and discrete steering entries; validate them using measured TX/RX directional behavior through the B01 beamformer and control interface.
-
-**Acceptance:**
-
-- Codebook identifies beam IDs, angle convention, channel order, coefficient format and calibration composition for separate TX/RX use.
-- Measure representative or all intended sector responses using a repeatable geometry; compare intended and observed direction and document coverage gaps/ambiguities.
-- Choose the initial discovery sector set and switching/settling requirements from measured behavior rather than assuming ideal array patterns.
-
-**Evidence:** Versioned codebook, array drawing, pattern plots, measurement setup and validated sector list.
-
-## Embedded platform, transport and scheduling tickets
-
-### F01 — Bring up boot, BSP, UART and timers
-
-**Owner role:** Embedded platform and transport. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** H01, S02.
+**Owner role:** Embedded platform and transport. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** #2, #3.
 
 **Scope:** Create the supported processor/BSP baseline and minimal runtime needed by Ethernet, control drivers and timestamped diagnostics on both nodes.
 
@@ -218,55 +146,31 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Build/boot instructions, images or artifact references, UART logs from both boards and timer/interrupt checks.
 
-### F02 — Implement AXI-Lite control/status RTL and driver
+<a id="s04--build-the-host-test-harness-and-evidence-format"></a>
+<a id="issue-8"></a>
 
-**Owner role:** Embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** F01, S03.
+### #8 — Build the host test harness and evidence format
 
-**Scope:** Implement the versioned CPU-to-FPGA control/status bank and matching firmware driver, including reset, capability and error visibility.
+**Owner role:** Integration and tooling. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** #1, #4.
 
-**Acceptance:**
-
-- RTL and driver agree on offsets, widths, access permissions, endianness, version and reset values; read/write tests pass on hardware.
-- Status/event handling is deterministic across reset and clock-domain boundaries; invalid or unsupported requests have defined outcomes.
-- Counters and error/status fields needed by converter, transport and modem bring-up are readable without disturbing active operation.
-
-**Evidence:** Register map, RTL test results, driver API and on-board register/status log.
-
-### F03 — Prove DMA packet loopback and buffer ownership
-
-**Owner role:** Embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** F02, S03.
-
-**Scope:** Transfer complete packets through CPU→FPGA→CPU loopback with explicit buffer ownership, alignment, cache maintenance, completion and interrupt handoff. Split into child tasks if implementation exceeds a small ticket.
+**Scope:** Provide reusable host traffic, capture and reporting tools for local Ethernet, modem and later routed-wireless demonstrations.
 
 **Acceptance:**
 
-- Minimum, maximum and boundary-length payloads return byte-for-byte with correct packet boundaries and completion lengths.
-- Ownership and cache operations are correct through repeated transfers, concurrent producer/consumer activity and ring wraparound; no buffer is reused early.
-- Backpressure, queue-full, invalid-length, timeout and reset paths release or reclaim resources predictably and increment the right counters.
-- Interrupt work follows the agreed execution model; a sustained run shows bounded buffer/descriptor usage rather than growth.
+- Scripts send/count ICMP and sequenced UDP traffic with known payloads, distinguish missing/duplicate/corrupt packets, and compute file SHA-256.
+- Host setup records interface addresses, specific remote-LAN routes, MTU and firewall rules used, with a documented cleanup procedure.
+- Reports include build/configuration IDs, timestamps, offered load, duration, counters and pass/fail thresholds; simulated loss/corruption produces a failure rather than a false pass.
 
-**Evidence:** Loopback test logs, length/stress/error cases, buffer-state diagram, cache/interrupt notes and relevant logic traces.
+**Evidence:** Runnable harness, example passing/failing reports and capture procedure.
 
-### F04 — Implement the half-duplex TDD scheduler
+<a id="n01--bring-up-ethernet-mac-phy-eth0-and-lwip"></a>
+<a id="issue-11"></a>
 
-**Owner role:** Link scheduling and beam control. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** S03, F02, D01.
+### #11 — Bring up Ethernet MAC, PHY, eth0 and lwIP
 
-**Scope:** Define and implement transmit ownership, receive windows, turnaround/guard time, matching ACKs, bounded retries and control-frame priority for the first bidirectional link.
+The [Linux/USB adapter](../firmware/net/lwip_ethernet/README.md) passed ARP, link recovery and local traffic on both Plutos. Linux supplies the USB driver. The bare-metal or RTOS MAC/PHY work specified below remains open.
 
-**Acceptance:**
-
-- Both roles follow a documented state machine with measured or modeled airtime/turnaround budgets; concurrent startup has a deterministic resolution.
-- Lost, late and duplicate ACKs do not acknowledge the wrong packet; retries/timeouts are bounded and duplicate delivery behavior is defined.
-- DATA traffic cannot indefinitely starve HAIL/ACK/control service; all queues have explicit limits and overflow outcomes.
-- Simulated or loopback traces cover normal exchange, timeout, contention and reset/rejoin without deadlock.
-
-**Evidence:** Timing/state diagrams, scheduling configuration, fault-case traces and queue/retry counter results.
-
-## Networking tickets
-
-### N01 — Bring up Ethernet MAC, PHY, eth0 and lwIP
-
-**Owner role:** Networking. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** F01.
+**Owner role:** Networking. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** #6.
 
 **Scope:** Bring up the selected Ethernet MAC/PHY driver and a static IPv4 `eth0` interface using the pinned vendor lwIP/BSP configuration on both boards.
 
@@ -278,9 +182,14 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** lwIP/BSP configuration, initialization logs, ARP capture and link reconnect results.
 
-### N02 — Prove local PC ICMP and UDP on both boards
+<a id="n02--prove-local-pc-icmp-and-udp-on-both-boards"></a>
+<a id="issue-17"></a>
 
-**Owner role:** Networking, verified by integration and tooling. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** N01, S04.
+### #17 — Prove local PC ICMP and UDP on both boards
+
+The [Linux USB endpoint](../firmware/net/lwip_ethernet/README.md) supports local ping and UDP checks. The original two-PC and board-support requirements remain open. Saved bench results stay local.
+
+**Owner role:** Networking, verified by integration and tooling. **Milestone:** M1 local ping. **Priority:** P0. **Depends on:** #11, #8.
 
 **Scope:** Demonstrate each companion PC communicating with its own FPGA endpoint over Ethernet. This is endpoint connectivity, not the routing milestone.
 
@@ -292,54 +201,14 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Separate reports for both boards, packet captures, UART/build IDs and UDP payload comparison.
 
-### N03 — Implement radio0 with a mock IP backend
+## M2 Modem bench
 
-**Owner role:** Networking. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** N02, S03.
+<a id="d01--build-the-floating-point-modem-reference-and-link-framing"></a>
+<a id="issue-5"></a>
 
-**Scope:** Add a raw-IP `radio0` lwIP interface and mock transport adapter so networking can be developed before RF integration.
+### #5 — Build the floating-point modem reference and link framing
 
-**Acceptance:**
-
-- Known IPv4 packets pass between the mock backend and `radio0` with correct lengths, checksums and agreed pbuf ownership/context.
-- MTU/oversize behavior, queue-full and link-down outcomes match S03; raw-IP radio traffic does not require Ethernet headers or ARP on the radio link.
-- Mock injection/capture supports controlled loss, delayed completion and malformed input without leaks or a crash.
-
-**Evidence:** Adapter API, mock harness, packet captures and ownership/error-path results.
-
-### N04 — Prove routes and actual IP forwarding without RF
-
-**Owner role:** Networking. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** N03.
-
-**Scope:** Enable actual IPv4 forwarding between `eth0` and `radio0`; implement the static remote-LAN policy and prove it with mock, injected-packet or two-node harness traffic.
-
-**Acceptance:**
-
-- Packets for the remote PC leave the intended interface with original PC source/destination addresses and correct TTL/checksum handling; return traffic routes correctly.
-- Tests distinguish local delivery from forwarding and cover no route, TTL expiry and the chosen MTU/DF behavior.
-- Removing the remote route or taking the radio link down prevents stale forwarding; restoration resumes without reboot.
-
-**Evidence:** lwIP forwarding/route configuration, address/route tables and ingress/egress captures. An application relay does not satisfy this ticket.
-
-### N05 — Bind radio0 to wireless DMA and connect the PCs
-
-**Owner role:** Networking, supported by embedded platform and transport, link scheduling and modem owners. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** N04, F03, F04, D07.
-
-**Scope:** Replace the mock backend with the packet transport and fixed-wireless link; route ordinary IP traffic between the two companion PCs.
-
-**Acceptance:**
-
-- Both PCs ping each other through their local node and the RF link using documented static routes; known UDP payloads cross intact in both directions.
-- Captures/counters trace the same PC-addressed packets through Ethernet, `radio0`, DMA and the modem without TCP proxying or unintended NAT.
-- MTU, Ethernet-to-radio backpressure and link-down/recovery paths follow the shared contract with bounded resources.
-- The integrated build and RF settings are reproducible and ready for the full S05 performance gate.
-
-**Evidence:** End-to-end packet traces, route/configuration dumps, build references and integrated smoke-test report.
-
-## Modem tickets
-
-### D01 — Build the floating-point modem reference and link framing
-
-**Owner role:** Modem, reviewed by link scheduling and beam control. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** S03.
+**Owner role:** Modem, reviewed by link scheduling and beam control. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #4.
 
 **Scope:** Choose the initial feasible burst waveform and build the reference transmitter/receiver with the agreed frame format and acquisition behavior.
 
@@ -351,9 +220,29 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Reproducible reference model, parameter file, golden frame examples and impairment results.
 
-### D02 — Produce fixed-point reference vectors
+<a id="h03--prepare-the-rf-bench-link-budget-and-attenuators"></a>
+<a id="issue-7"></a>
 
-**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** D01.
+### #7 — Prepare the RF bench, link budget and attenuators
+
+**Owner role:** Hardware and RF. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #2, #1.
+
+**Scope:** Design and document the conducted RF fixture and initial RF operating envelope using the actual selected hardware and test equipment.
+
+**Acceptance:**
+
+- Record expected/measured TX power, path and attenuator losses, RX limits, gain settings and measurement uncertainty at the selected frequency.
+- The cabled fixture, connectors, attenuators and any required isolation are identified; calculated receive levels remain within selected equipment ratings and usable range.
+- Provide a repeatable setup diagram and operating-point checklist, including independent-node oscillator configuration for #21.
+
+**Evidence:** Link-budget worksheet, fixture diagram, component ratings and measured power/loss results.
+
+<a id="d02--produce-fixed-point-reference-vectors"></a>
+<a id="issue-9"></a>
+
+### #9 — Produce fixed-point reference vectors
+
+**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #5.
 
 **Scope:** Define fixed-point widths/scaling, rounding/saturation and deterministic golden vectors for hardware implementation.
 
@@ -365,9 +254,29 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Fixed-point model, format table, versioned vectors, comparison script and results.
 
-### D03 — Implement the FPGA transmit modem
+<a id="f02--implement-axi-lite-controlstatus-rtl-and-driver"></a>
+<a id="issue-10"></a>
 
-**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** D02.
+### #10 — Implement AXI-Lite control/status RTL and driver
+
+**Owner role:** Embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #6, #4.
+
+**Scope:** Implement the versioned CPU-to-FPGA control/status bank and matching firmware driver, including reset, capability and error visibility.
+
+**Acceptance:**
+
+- RTL and driver agree on offsets, widths, access permissions, endianness, version and reset values; read/write tests pass on hardware.
+- Status/event handling is deterministic across reset and clock-domain boundaries; invalid or unsupported requests have defined outcomes.
+- Counters and error/status fields needed by converter, transport and modem bring-up are readable without disturbing active operation.
+
+**Evidence:** Register map, RTL test results, driver API and on-board register/status log.
+
+<a id="d03--implement-the-fpga-transmit-modem"></a>
+<a id="issue-12"></a>
+
+### #12 — Implement the FPGA transmit modem
+
+**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #9.
 
 **Scope:** Implement framing, symbol mapping, pulse shaping and sample output for the selected burst modem.
 
@@ -379,9 +288,12 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** RTL simulation/vector comparison, representative waveforms and synthesis/timing report.
 
-### D04 — Implement the FPGA receive modem
+<a id="d04--implement-the-fpga-receive-modem"></a>
+<a id="issue-13"></a>
 
-**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** D02.
+### #13 — Implement the FPGA receive modem
+
+**Owner role:** Modem. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #9.
 
 **Scope:** Implement burst detection, filtering, symbol timing, carrier-frequency/phase recovery, frame parsing and CRC. Split into focused child tasks if needed, keeping one integrated receiver gate.
 
@@ -394,9 +306,47 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Receiver test matrix, reference comparisons, impairment/acquisition plots, RTL traces and synthesis report.
 
-### D05 — Prove digital frame modem loopback
+<a id="f03--prove-dma-packet-loopback-and-buffer-ownership"></a>
+<a id="issue-14"></a>
 
-**Owner role:** Modem, supported by embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** D03, D04, F03.
+### #14 — Prove DMA packet loopback and buffer ownership
+
+**Owner role:** Embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #10, #4.
+
+**Scope:** Transfer complete packets through CPU→FPGA→CPU loopback with explicit buffer ownership, alignment, cache maintenance, completion and interrupt handoff. Split into child tasks if implementation exceeds a small ticket.
+
+**Acceptance:**
+
+- Minimum, maximum and boundary-length payloads return byte-for-byte with correct packet boundaries and completion lengths.
+- Ownership and cache operations are correct through repeated transfers, concurrent producer/consumer activity and ring wraparound; no buffer is reused early.
+- Backpressure, queue-full, invalid-length, timeout and reset paths release or reclaim resources predictably and increment the right counters.
+- Interrupt work follows the agreed execution model; a sustained run shows bounded buffer/descriptor usage rather than growth.
+
+**Evidence:** Loopback test logs, length/stress/error cases, buffer-state diagram, cache/interrupt notes and relevant logic traces.
+
+<a id="h02--bring-up-converters-and-one-rf-iq-path"></a>
+<a id="issue-16"></a>
+
+### #16 — Bring up converters and one RF I/Q path
+
+**Owner role:** Hardware and RF, supported by embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #2, #10.
+
+**Scope:** Configure clocks, resets and converter/transceiver interfaces; prove a single transmit and receive sample path with known stimuli.
+
+**Acceptance:**
+
+- Converter clocks and status reach the documented stable state after reset; sample rate and I/Q/channel ordering are verified.
+- A known digital tone/pattern reaches the selected TX path and a known RX stimulus produces expected samples without unexplained clipping, lane swaps or data loss.
+- Gain, scaling, DC offset and frequency/sign conventions are recorded for the modem team; status/errors are visible through #10.
+
+**Evidence:** Bring-up procedure, register configuration, captured samples, instrument plots and clock/reset status logs.
+
+<a id="d05--prove-digital-frame-modem-loopback"></a>
+<a id="issue-19"></a>
+
+### #19 — Prove digital frame modem loopback
+
+**Owner role:** Modem, supported by embedded platform and transport. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #12, #13, #14.
 
 **Scope:** Connect the complete CPU packet→DMA→TX modem→digital loopback→RX modem→DMA→CPU path before introducing analog RF.
 
@@ -408,11 +358,14 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Full-path test report, payload comparisons, CRC/error counters and selected logic traces.
 
-### D06 — Prove bidirectional conducted RF with independent oscillators
+<a id="d06--prove-bidirectional-conducted-rf-with-independent-oscillators"></a>
+<a id="issue-21"></a>
 
-**Owner role:** Modem, supported by hardware and RF. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** D05, H02, H03.
+### #21 — Prove bidirectional conducted RF with independent oscillators
 
-**Scope:** Exchange framed packets between two physical nodes over the documented attenuated RF fixture. Separate manual-role A→B and B→A runs are valid here; automated TDD is implemented in F04.
+**Owner role:** Modem, supported by hardware and RF. **Milestone:** M2 modem bench. **Priority:** P0. **Depends on:** #19, #16, #7.
+
+**Scope:** Exchange framed packets between two physical nodes over the documented attenuated RF fixture. Separate manual-role A→B and B→A runs are valid here; automated TDD is implemented in #15.
 
 **Acceptance:**
 
@@ -422,9 +375,66 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** M2 bench report, RF fixture/settings, transmitted/received frame logs, payload checks and acquisition/error plots.
 
-### D07 — Prove an OTA packet link with fixed antennas or beams
+## M3 Routed wireless
 
-**Owner role:** Modem, supported by hardware and RF and link scheduling and beam control. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** D06, F04.
+<a id="f04--implement-the-half-duplex-tdd-scheduler"></a>
+<a id="issue-15"></a>
+
+### #15 — Implement the half-duplex TDD scheduler
+
+**Owner role:** Link scheduling and beam control. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #4, #10, #5.
+
+**Scope:** Define and implement transmit ownership, receive windows, turnaround/guard time, matching ACKs, bounded retries and control-frame priority for the first bidirectional link.
+
+**Acceptance:**
+
+- Both roles follow a documented state machine with measured or modeled airtime/turnaround budgets; concurrent startup has a deterministic resolution.
+- Lost, late and duplicate ACKs do not acknowledge the wrong packet; retries/timeouts are bounded and duplicate delivery behavior is defined.
+- DATA traffic cannot indefinitely starve HAIL/ACK/control service; all queues have explicit limits and overflow outcomes.
+- Simulated or loopback traces cover normal exchange, timeout, contention and reset/rejoin without deadlock.
+
+**Evidence:** Timing/state diagrams, scheduling configuration, fault-case traces and queue/retry counter results.
+
+<a id="n03--implement-radio0-with-a-mock-ip-backend"></a>
+<a id="issue-20"></a>
+
+### #20 — Implement radio0 with a mock IP backend
+
+**Owner role:** Networking. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #17, #4.
+
+**Scope:** Add a raw-IP `radio0` lwIP interface and mock transport adapter so networking can be developed before RF integration.
+
+**Acceptance:**
+
+- Known IPv4 packets pass between the mock backend and `radio0` with correct lengths, checksums and agreed pbuf ownership/context.
+- MTU/oversize behavior, queue-full and link-down outcomes match #4; raw-IP radio traffic does not require Ethernet headers or ARP on the radio link.
+- Mock injection/capture supports controlled loss, delayed completion and malformed input without leaks or a crash.
+
+**Evidence:** Adapter API, mock harness, packet captures and ownership/error-path results.
+
+<a id="n04--prove-routes-and-actual-ip-forwarding-without-rf"></a>
+<a id="issue-22"></a>
+
+### #22 — Prove routes and actual IP forwarding without RF
+
+**Owner role:** Networking. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #20.
+
+**Scope:** Enable actual IPv4 forwarding between `eth0` and `radio0`; implement the static remote-LAN policy and prove it with mock, injected-packet or two-node harness traffic.
+
+**Acceptance:**
+
+- Packets for the remote PC leave the intended interface with original PC source/destination addresses and correct TTL/checksum handling; return traffic routes correctly.
+- Tests distinguish local delivery from forwarding and cover no route, TTL expiry and the chosen MTU/DF behavior.
+- Removing the remote route or taking the radio link down prevents stale forwarding; restoration resumes without reboot.
+
+**Evidence:** lwIP forwarding/route configuration, address/route tables and ingress/egress captures. An application relay does not satisfy this ticket.
+
+<a id="d07--prove-an-ota-packet-link-with-fixed-antennas-or-beams"></a>
+<a id="issue-23"></a>
+
+### #23 — Prove an OTA packet link with fixed antennas or beams
+
+**Owner role:** Modem, supported by hardware and RF and link scheduling and beam control. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #21, #15.
 
 **Scope:** Move the framed link over the air using a fixed antenna configuration or manually selected fixed beam and the TDD scheduler.
 
@@ -432,31 +442,55 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 - Both nodes exchange known DATA/control payloads over the fixed RF path with logged first-attempt error rate and final delivery; record the agreed distance/orientation and operating point.
 - Simultaneous offered traffic follows TDD ownership, ACK/retry bounds and control priority without persistent collisions or starvation.
-- Measure sustainable payload capacity and latency sufficiently to set a below-capacity UDP offered rate for S05.
+- Measure sustainable payload capacity and latency sufficiently to set a below-capacity UDP offered rate for #29.
 - Link interruption/reappearance recovers the fixed-path packet service without requiring automatic beam discovery.
 
 **Evidence:** OTA setup diagram, frame/counter logs, throughput/latency measurements and interruption trace.
 
-## Beam and discovery tickets
+<a id="n05--bind-radio0-to-wireless-dma-and-connect-the-pcs"></a>
+<a id="issue-27"></a>
 
-### B01 — Implement the beamformer and atomic beam control
+### #27 — Bind radio0 to wireless DMA and connect the PCs
 
-**Owner role:** Link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** H04, F02.
+**Owner role:** Networking, supported by embedded platform and transport, link scheduling and modem owners. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #22, #14, #15, #23.
 
-**Scope:** Implement or integrate the multichannel beamformer and matching driver. Distribute and weight TX samples across antenna paths; align, weight and combine RX samples before modem decoding. Apply calibrated coefficients atomically at allowed boundaries. Document any weighting/combining performed inside the selected RF front end. Split datapath and control into child issues if needed.
+**Scope:** Replace the mock backend with the packet transport and fixed-wireless link; route ordinary IP traffic between the two companion PCs.
 
 **Acceptance:**
 
-- TX fanout/complex weights and RX alignment/weighted sum match a fixed-point reference for known channel inputs and coefficients, including phase convention, scaling, saturation and latency.
-- Firmware requests and hardware confirms the correct local TX/RX coefficient bank/beam ID and calibration version; known weights support H05 codebook measurements.
-- Bank commit/switching honors frame boundaries and measured settling time; no frame uses an unintended mixture of old/new coefficients.
-- Invalid IDs, reset and interrupted updates have defined behavior; implementation meets the agreed per-channel sample rate and records timing/resource usage.
+- Both PCs ping each other through their local node and the RF link using documented static routes; known UDP payloads cross intact in both directions.
+- Captures/counters trace the same PC-addressed packets through Ethernet, `radio0`, DMA and the modem without TCP proxying or unintended NAT.
+- MTU, Ethernet-to-radio backpressure and link-down/recovery paths follow the shared contract with bounded resources.
+- The integrated build and RF settings are reproducible and ready for the full #29 performance gate.
 
-**Evidence:** Datapath reference/vector comparisons, driver/register tests, coefficient/bank traces, boundary-switch tests and timing/resource report.
+**Evidence:** End-to-end packet traces, route/configuration dumps, build references and integrated smoke-test report.
 
-### B02 — Simulate discovery and rendezvous
+<a id="s05--measure-pc-to-pc-performance-and-run-regression"></a>
+<a id="issue-29"></a>
 
-**Owner role:** Discovery and directional policy, reviewed by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** S03, F04.
+### #29 — Measure PC-to-PC performance and run regression
+
+**Owner role:** Integration and tooling, supported by networking and modem owners. **Milestone:** M3 PC-to-PC fixed wireless. **Priority:** P0. **Depends on:** #27, #8.
+
+**Scope:** Run the full fixed-wireless demonstration between companion PCs and establish a reproducible baseline for future beam/discovery changes.
+
+**Acceptance:**
+
+- At least 99% of 1,000 ICMP requests succeed in each direction; report RTT distribution and timeout count.
+- A 10-minute sequenced UDP run at a stated rate below measured sustainable capacity loses at most 1%; report offered/delivered rates, duplicates and payload integrity for each tested direction.
+- A 10 MB TCP file crosses the link with identical source/destination SHA-256; captures confirm preserved PC endpoints and expected routed TTL handling.
+- Link interruption and restoration have bounded queues and no crash/leak; a repeatable regression run includes local ping and the fixed-link baseline.
+
+**Evidence:** M3 report, scripts/configurations, packet captures, RF operating point, counters and file hashes.
+
+## M4 Direction aware
+
+<a id="b02--simulate-discovery-and-rendezvous"></a>
+<a id="issue-18"></a>
+
+### #18 — Simulate discovery and rendezvous
+
+**Owner role:** Discovery and directional policy, reviewed by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #4, #15.
 
 **Scope:** Define initiator/responder roles, TX/RX sweep order, receive dwell, guard time, ACK return path and timeout/retry behavior before OTA sweeps.
 
@@ -468,9 +502,64 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Protocol/state/timing specification, simulation scenarios and traces, timeout derivation and agreed recovery gate.
 
-### B03 — Run directional HAIL/ACK sweeps over the air
+<a id="h04--establish-coherent-timing-and-calibration-for-four-rf-paths"></a>
+<a id="issue-24"></a>
 
-**Owner role:** Discovery and directional policy, supported by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** B01, B02, D07, H05.
+### #24 — Establish coherent timing and calibration for four RF paths
+
+**Owner role:** Hardware and RF. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #16, #7, #21.
+
+**Scope:** Extend the proven single-path system to the intended four RF antenna paths; measure deterministic alignment and separate TX/RX amplitude/phase corrections.
+
+**Acceptance:**
+
+- All intended RF paths have a verified channel map and deterministic timing/coherence behavior under the chosen clock/LO/reset arrangement.
+- Measure relative amplitude/phase across TX paths and across RX paths; validate calculated corrections offline or with existing converter controls and compare residuals against agreed tolerances. #26/#28 verify application in the implemented beamformer.
+- Repeat calibration checks after restart; document recalibration triggers and store versioned correction data with frequency/settings.
+
+**Evidence:** Multichannel timing captures, before/after calibration measurements, coefficients and restart-repeatability report.
+
+<a id="b01--implement-the-beamformer-and-atomic-beam-control"></a>
+<a id="issue-26"></a>
+
+### #26 — Implement the beamformer and atomic beam control
+
+**Owner role:** Link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #24, #10.
+
+**Scope:** Implement or integrate the multichannel beamformer and matching driver. Distribute and weight TX samples across antenna paths; align, weight and combine RX samples before modem decoding. Apply calibrated coefficients atomically at allowed boundaries. Document any weighting/combining performed inside the selected RF front end. Split datapath and control into child issues if needed.
+
+**Acceptance:**
+
+- TX fanout/complex weights and RX alignment/weighted sum match a fixed-point reference for known channel inputs and coefficients, including phase convention, scaling, saturation and latency.
+- Firmware requests and hardware confirms the correct local TX/RX coefficient bank/beam ID and calibration version; known weights support #28 codebook measurements.
+- Bank commit/switching honors frame boundaries and measured settling time; no frame uses an unintended mixture of old/new coefficients.
+- Invalid IDs, reset and interrupted updates have defined behavior; implementation meets the agreed per-channel sample rate and records timing/resource usage.
+
+**Evidence:** Datapath reference/vector comparisons, driver/register tests, coefficient/bank traces, boundary-switch tests and timing/resource report.
+
+<a id="h05--create-the-beam-codebook-and-measure-patterns"></a>
+<a id="issue-28"></a>
+
+### #28 — Create the beam codebook and measure patterns
+
+**Owner role:** Hardware and RF, reviewed by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #24, #26.
+
+**Scope:** Define array geometry, angle conventions and discrete steering entries; validate them using measured TX/RX directional behavior through the #26 beamformer and control interface.
+
+**Acceptance:**
+
+- Codebook identifies beam IDs, angle convention, channel order, coefficient format and calibration composition for separate TX/RX use.
+- Measure representative or all intended sector responses using a repeatable geometry; compare intended and observed direction and document coverage gaps/ambiguities.
+- Choose the initial discovery sector set and switching/settling requirements from measured behavior rather than assuming ideal array patterns.
+
+**Evidence:** Versioned codebook, array drawing, pattern plots, measurement setup and validated sector list.
+
+<a id="b03--run-directional-hailack-sweeps-over-the-air"></a>
+<a id="issue-31"></a>
+
+### #31 — Run directional HAIL/ACK sweeps over the air
+
+**Owner role:** Discovery and directional policy, supported by link scheduling and beam control. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #26, #18, #23, #28.
 
 **Scope:** Connect the discovery state machine to measured beam entries and the functioning RF link; validate a bidirectional HAIL/ACK exchange before declaring a peer reachable.
 
@@ -478,13 +567,16 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 - Sweeps produce logs of requested/applied TX/RX beam IDs, peer/transaction IDs, timestamps and measured quality with units.
 - Only a matching valid exchange marks a beam pair usable; energy detection or unrelated/stale ACKs cannot establish reachability.
-- Discovery works across the planned orientations/startup cases and can restart after a timeout using the B02 schedule.
+- Discovery works across the planned orientations/startup cases and can restart after a timeout using the #18 schedule.
 
 **Evidence:** OTA sweep logs, geometry/beam settings, valid/invalid exchange traces and discovery-time results.
 
-### B04 — Integrate fresh neighbor/beam state with routing
+<a id="b04--integrate-fresh-neighborbeam-state-with-routing"></a>
+<a id="issue-32"></a>
 
-**Owner role:** Discovery and directional policy, reviewed by networking. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** B03, N05.
+### #32 — Integrate fresh neighbor/beam state with routing
+
+**Owner role:** Discovery and directional policy, reviewed by networking. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #31, #27.
 
 **Scope:** Maintain peer-to-beam/quality/freshness state and notify the route manager when the configured remote LAN becomes reachable or unreachable through `radio0`.
 
@@ -496,40 +588,49 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Neighbor/route event traces, before/after tables, expiry tests and PC traffic captures.
 
-### B05 — Prove blockage, rediscovery and end-to-end recovery
+<a id="b05--prove-blockage-rediscovery-and-end-to-end-recovery"></a>
+<a id="issue-33"></a>
 
-**Owner role:** Discovery and directional policy, verified by integration and tooling. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** B04, S05.
+### #33 — Prove blockage, rediscovery and end-to-end recovery
+
+**Owner role:** Discovery and directional policy, verified by integration and tooling. **Milestone:** M4 direction-aware. **Priority:** P1. **Depends on:** #32, #29.
 
 **Scope:** Run controlled end-to-end trials that disturb the usable directional link and demonstrate stale-state expiry, rediscovery and resumed PC traffic.
 
 **Acceptance:**
 
-- Across 20 controlled trials, at least 19 restore PC traffic within the timeout agreed from S01/B02; define the disturbance and the recovery start/end events before testing.
+- Across 20 controlled trials, at least 19 restore PC traffic within the timeout agreed from #1/#18; define the disturbance and the recovery start/end events before testing.
 - Logs show the lost/expired neighbor, route withdrawal, new matching exchange, selected beam pair, route restoration and first restored PC payload.
 - Record discovery/recovery time, quality, geometry, packet loss and failure reasons; no stale route persists beyond expiry, no remote traffic falls back to an unintended interface, and queued packets/resources remain bounded during loss and recovery.
-- The fixed-link M3 configuration remains reproducible and the S05 regression does not introduce an unexplained failure.
+- The fixed-link M3 configuration remains reproducible and the #29 regression does not introduce an unexplained failure.
 
 **Evidence:** M4 trial table, synchronized event/traffic logs, geometry/beam records and regression report.
 
-## Optional extension tickets
+## M5 Optional extensions
 
-### X01 — Optionally implement an actual L2 Ethernet bridge
+<a id="x03--evaluate-adaptive-throughput-or-a-fec-upgrade"></a>
+<a id="issue-25"></a>
 
-**Owner role:** Networking. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** B05.
+### #25 — Evaluate adaptive throughput or a FEC upgrade
 
-**Scope:** If selected after the baseline, extend or replace the raw-IP radio adapter with Ethernet-frame transport and implement actual same-subnet bridging.
+**Owner role:** Modem, reviewed by link scheduling and beam control. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** #21.
+
+**Scope:** Choose one measured improvement, such as FEC or a controlled throughput mode, after identifying the baseline limitation. Do not bundle several new modem architectures into one ticket.
 
 **Acceptance:**
 
-- Two same-subnet PCs communicate through the bridge without remote-subnet routes; preserve Ethernet frame semantics and the agreed MTU.
-- Verify ARP/broadcast handling, MAC learning/ageing and unknown-unicast behavior with bounded tables/queues and a documented loop-free topology assumption.
-- A dedicated L2 test suite passes and the separate routed L3 baseline can still be reproduced.
+- Define the selected change, compatibility/mode agreement, added latency/resources and success metric before implementation.
+- Compare baseline and upgraded first-attempt errors, delivered goodput and latency at the same recorded operating points; account for coding/handshake overhead.
+- Mismatched mode or a failed upgrade has defined behavior, and the original modem mode still passes its relevant regression tests.
 
-**Evidence:** Revised architecture/frame contract, MAC/ARP captures, L2 tests and baseline regression results.
+**Evidence:** Design decision, reference/RTL changes, controlled comparison report and compatibility/regression results.
 
-### X02 — Add per-LAN DHCP or host provisioning convenience
+<a id="x02--add-per-lan-dhcp-or-host-provisioning-convenience"></a>
+<a id="issue-30"></a>
 
-**Owner role:** Networking, supported by integration and tooling. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** N05.
+### #30 — Add per-LAN DHCP or host provisioning convenience
+
+**Owner role:** Networking, supported by integration and tooling. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** #27.
 
 **Scope:** Select either per-LAN DHCP support or repeatable host setup tooling to reduce manual address/route configuration for demonstrations.
 
@@ -541,16 +642,19 @@ For every completed ticket, link the code/design changes and store an evidence r
 
 **Evidence:** Provisioning code/configuration, fresh-host test, lease or route captures and cleanup/fallback instructions.
 
-### X03 — Evaluate adaptive throughput or a FEC upgrade
+<a id="x01--optionally-implement-an-actual-l2-ethernet-bridge"></a>
+<a id="issue-34"></a>
 
-**Owner role:** Modem, reviewed by link scheduling and beam control. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** D06.
+### #34 — Optionally implement an actual L2 Ethernet bridge
 
-**Scope:** Choose one measured improvement, such as FEC or a controlled throughput mode, after identifying the baseline limitation. Do not bundle several new modem architectures into one ticket.
+**Owner role:** Networking. **Milestone:** M5 stretch. **Priority:** P2. **Depends on:** #33.
+
+**Scope:** If selected after the baseline, extend or replace the raw-IP radio adapter with Ethernet-frame transport and implement actual same-subnet bridging.
 
 **Acceptance:**
 
-- Define the selected change, compatibility/mode agreement, added latency/resources and success metric before implementation.
-- Compare baseline and upgraded first-attempt errors, delivered goodput and latency at the same recorded operating points; account for coding/handshake overhead.
-- Mismatched mode or a failed upgrade has defined behavior, and the original modem mode still passes its relevant regression tests.
+- Two same-subnet PCs communicate through the bridge without remote-subnet routes; preserve Ethernet frame semantics and the agreed MTU.
+- Verify ARP/broadcast handling, MAC learning/ageing and unknown-unicast behavior with bounded tables/queues and a documented loop-free topology assumption.
+- A dedicated L2 test suite passes and the separate routed L3 baseline can still be reproduced.
 
-**Evidence:** Design decision, reference/RTL changes, controlled comparison report and compatibility/regression results.
+**Evidence:** Revised architecture/frame contract, MAC/ARP captures, L2 tests and baseline regression results.

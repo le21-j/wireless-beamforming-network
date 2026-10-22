@@ -1,0 +1,5 @@
+# Keep Linux scripts and source hashes consistent on Windows and Linux.
+firmware/net/** text eol=lf
+tools/** text eol=lf
+tests/** text eol=lf
+.gitattributes text eol=lf
