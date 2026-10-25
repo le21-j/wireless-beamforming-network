@@ -10,8 +10,6 @@ Project files use team prefixes: `sw_` for software, `hw_` for Verilog and Syste
 
 The [SW resources](docs/bringup/sw_resources.md) page lists the sources used for the software, grouped by topic.
 
-The [AirComp references](references/aircomp/README.md) include FPGA sample timing, transmit-window and sample-playback examples with standalone simulation tests for M2.
-
 - [Useful links to get started](docs/reading-guide.md)
 - [Our project plan](docs/project-plan.md)
 - [34 live GitHub issues](https://github.com/le21-j/wireless-beamforming-network/issues)
